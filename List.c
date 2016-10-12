@@ -1,12 +1,10 @@
 /*Giovani Nascimento Pereira - 16809
  *Mudulo para implementação de Lista.c*/
 
-#ifndef _Library
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "List.h"
-#endif
 
 /*Inset a information node on the List*/
 void InsertList(Head head, string s, int value){

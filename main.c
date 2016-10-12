@@ -1,23 +1,10 @@
 /*Giovani Nascimento Pereira - 168609
  *Projeto MC404 - Montador IAS*/
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <ctype.h>
-#include <string.h>
-#include "Reader.h"
-#include "Bool.h"
-#include "Text.h"
-#include "List.h"
-
-void finishLine (FILE *source){
-
-	char kill;
-	do{
-		fscanf(source, "%c", &kill);
-	}while(kill != '\n');
-
-}
+#ifndef _Libraries
+#define _Libraries
+#include "Header.h"
+#endif
 
 
 /*Begining the Main function*/

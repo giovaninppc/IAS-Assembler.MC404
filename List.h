@@ -2,6 +2,8 @@
  * Modulo Lista.h*/
 
 #ifndef _Library
+#define _Library
+
 #include <stdio.h>
 #include <stdlib.h>
 
