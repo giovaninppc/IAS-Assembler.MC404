@@ -19,9 +19,11 @@ typedef struct List{
 typedef struct List* Node;
 typedef struct List* Head;
 
-void InsertList(Head head, string s, int value);
-Node FindStringList (Head head, string s);
-void DeleteList(Head head);
-void RemoveList();
+void insertList(Head head, string s, int value);
+Node findStringList (Head head, string s);
+void deleteList(Head head);
+void printList(Head head);
+Node newNode(string s, int value);
+void removeList();
 
 #endif

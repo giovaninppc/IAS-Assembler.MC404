@@ -1,0 +1,513 @@
+
+<!-- saved from url=(0086)http://www.ic.unicamp.br/~edson/disciplinas/mc404/2016-2s/abef/labs/trab01/trab01.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link href="./bootstrap.css" rel="stylesheet">
+    
+  </head>
+  
+  <body>
+	
+    <h2>Trabalho 1: Montador para a arquitetura do computador IAS</h2>
+    
+    <hr>
+    
+    <h2><b>Avisos</b></h2>
+    <p>
+      Nesta seção serão apresentados os avisos importantes referentes ao
+      trabalho 1. 
+      
+      </p><ul>
+	<li> 
+	  19/09/2016: Enunciado do trabalho 1 divulgado!
+	</li>
+      </ul>
+      
+    <p></p>
+    
+    <hr>
+    
+    <h3>Introdução</h3>
+    
+    <p>
+      Um montador (<i>assembler</i>) é uma
+      ferramenta que converte código em linguagem de montagem
+      (<i>assembly</i>) para código em linguagem de máquina. Neste
+      trabalho, você irá implementar um montador para a linguagem de
+      montagem do computador IAS, que produza como resultado um mapa
+      de memória para ser utilizado no simulador do IAS, que
+      pode ser encontrado em: 
+      <a href="http://www.ic.unicamp.br/~edson/disciplinas/mc404/2016-2s/abef/IAS-sim/index.html">http://www.ic.unicamp.br/~edson/disciplinas/mc404/2016-2s/abef/IAS-sim/index.html</a>.
+    </p>
+    
+    <h3>Especificações do montador</h3>
+    
+    <p>
+      Nesta seção serão apresentadas as especificações gerais do
+      montador, da linguagem de montagem aceita por ele e da linguagem
+      de máquina que o montador deve produzir.
+    </p>
+    
+    <h4>Especificações gerais</h4>
+    
+    <p>
+      O arquivo de saída do montador é um mapa de memória que contém
+      linhas no formato:
+    </p>
+    
+    <pre>AAA DD DDD DD DDD</pre>
+    
+    <p>
+      Na linha acima, <tt>AAA</tt> é uma sequência de 3 dígitos
+      hexadecimais que representa o endereço de memória, totalizando
+      12 <i>bits</i>. Já <tt>DD DDD DD DDD</tt> é uma sequência de 10
+      dígitos hexadecimais, que totaliza 40 <i>bits</i> e representa 
+      um dado ou duas instruções do IAS, conforme
+      já visto em aula. Note que existem caracteres de espaço na linha, num
+      total de exatos 4 espaços - é importante que seu montador produza um
+      mapa de memória EXATAMENTE nesse formato para permitir a execução dos
+      casos de teste. Não deve haver caracteres extras ou linhas em branco,
+      apenas linhas no formato acima.
+    </p>
+    
+    <p>
+      O arquivo de entrada do montador deve ser um arquivo de texto tal que
+      cada linha deve ser como uma das seguintes:
+      </p><pre> [rotulo:] [instrucao] [# comentario]</pre>
+      ou
+      <pre> [rotulo:] [diretiva] [# comentario]</pre>
+    <p></p>
+    
+    <p>
+      Nas linhas acima, os colchetes determinam elementos opcionais - ou
+      seja, qualquer coisa é opcional, podendo então haver linhas em branco
+      no arquivo de entrada, ou apenas linhas de comentário, ou linhas só
+      com uma instrução, etc. É possível que haja múltiplos espaços em
+      branco no início ou fim da linha ou entre os elementos. Como exemplo,
+      as seguintes linhas são válidas num arquivo de entrada para o
+      montador:
+      
+      </p><pre>vetor1:
+vetor2:   .word 10
+vetor3:   .word 10 # Comentario apos diretiva
+
+.word 10
+.word 10  # Comentario apos diretiva
+# Comentario sozinho  
+
+vetor4: ADD "0x0000000100"
+vetor5: ADD "0x0000000100" # Comentario apos instrucao
+
+ADD "0x0000000100"
+</pre>
+
+      e as seguintes linhas são <b>inválidas</b>:
+
+<pre>rotulo1: outro_rotulo: mais_um_rotulo: 
+
+vetor: .word 10 ADD "0x000000000100"
+
+.word 10 .align 5
+
+vetor: ADD "0x000000000100" .word 10
+
+ADD "0x000000000100" ADD "0x000000000100"
+</pre>
+
+    <p></p>
+    
+    <p>
+      Algumas regras gerais do montador:
+    </p>
+    
+    <ul>
+      <li>
+	É possível que um programa possua palavras de memória com apenas uma
+	instrução (veja a diretiva <tt>.align</tt>).  O seu montador deve
+	completar a parte "não preenchida" da palavra com zeros.
+      </li>
+      
+      <li> 
+	O montador deve ser sensível à caixa das letras (o mnemônico LD é
+	válido enquanto que o mnemônico ld não é).  O montador deve
+	interromper a montagem e produzir uma mensagem de erro (ver
+	abaixo) quando esta regra for violada.
+      </li>
+      
+      <li> 
+	Os casos de teste não possuirão palavras acentuadas, portanto, não
+	é necessário tratar acentos no montador.
+      </li>
+      
+      <li> 
+	O executável do montador deve aceitar 2 argumentos, sendo que
+	  o primeiro é obrigatório e o segundo é opcional.
+	<ul>
+	  <li> O primeiro argumento deve conter o nome do arquivo de
+	    entrada, ou seja, o nome do arquivo que contém o programa
+	    em linguagem de montagem.
+	  </li>
+	  
+	  <li> O segundo argumento, facultativo, é o nome do arquivo
+	    de saída a ser gerado pelo montador. Caso o segundo
+	    argumento não seja fornecido, você deve imprimir o mapa de
+	    memória na saída padrão (<tt>stdout</tt>), em vez de
+	    imprimi-lo em arquivo.
+	  </li>
+	  
+	  <li> Dois exemplos válidos são: 
+	    <pre>./ias-as entrada.s saida.map</pre> 
+	    que lê um arquivo denominado <tt>entrada.s</tt> e
+	    gera o mapa de memória no arquivo <tt>saida.map</tt>, e
+	    <pre>./ias-as prog.s</pre> que lê um arquivo de nome
+	    <tt>prog.s</tt> e imprime o mapa de memória na saída
+	    padrão. Você não deve supor que os nomes dos arquivos
+	    tenham sufixos pré-determinados, como ".s", ".asm",
+	    ".map", etc. Dessa forma, os seguintes comandos também
+	    devem ser válidos:
+	    <pre>./ias-as arq.asm arq.hex
+./ias-as arq.txt arq.out</pre>
+	  </li>
+	</ul>
+      </li>
+    </ul>
+    
+    <p>
+      As próximas seções descrevem as regras referentes à linguagem de
+      montagem.
+    </p>
+    
+    <h4>Comentários</h4>
+    
+    <p>
+      Comentários são cadeias de caracteres que servem para documentar ou
+      anotar o código. Essas cadeias devem ser desprezadas durante a
+      montagem do programa. Todo texto à direita de um caractere "#"
+      (cerquilha) é considerado comentário.
+    </p>
+    
+    <h4>Rótulos</h4>
+    
+    <p>
+      Rótulos são compostos por caracteres alfanuméricos e podem
+      conter o caractere "_" (<i>underscore</i>). Um rótulo é definido
+      como uma cadeia de caracteres que deve ser terminada com o
+      caractere ":" (dois pontos) e não pode ser iniciada com um
+      número. Exemplos de rótulos válidos são:
+</p><pre>varX:
+var1:
+_varX2:
+laco_1:
+__DEBUG__:
+</pre>
+Exemplos de rótulos <b>inválidos</b> são:
+<pre>varx::
+:var1
+1var:
+laco
+ro:tulo
+</pre>
+    <p></p>
+
+    <h4>Diretivas</h4>
+    
+    <p>
+      Todas as diretivas da linguagem de montagem do IAS começam com o
+      caractere "." (ponto). As diretivas podem ter um ou dois
+      argumentos - tais argumentos podem ser dos seguintes tipos:
+    </p>
+    
+    <table border="4" align="center">
+      <tbody><tr>
+	<td>HEX</td>
+	<td> um valor na representação hexadecimal. Estes valores
+	  possuem exatamente 12 dígitos, sendo os dois primeiros '0' e 'x' e os
+	  10 últimos dígitos hexadecimais, ou seja, 0-9, a-f ou
+	  A-F. Ex: <tt>0x0a0Ef217D0</tt>
+	</td>
+      </tr>
+      <tr>
+	<td>DEC(min:max)</td><td> valores numéricos na representação
+	decimal. Apenas valores no intervalo (min:max) são válidos e
+	seu montador deve realizar esta verificação. Caso o valor não
+	esteja no intervalo (min:max), o montador deve emitir uma
+	mensagem de erro na saída de erro e interromper o processo de
+	montagem sem produzir o mapa de memória na saída padrão
+	(<tt>stdout</tt>) ou no arquivo de saída.</td>
+      </tr>
+      <tr>
+	<td>ROT</td><td>caracteres alfanuméricos e "_"
+	(<i>underscore</i>). Não pode começar com número (veja a
+	descrição de rótulos acima) e deve terminar com ':'. </td>
+      </tr>
+      <tr>
+	<td>SYM</td><td>caracteres alfanuméricos e "_" (<i>underscore</i>) - não pode começar com número.</td>
+      </tr>
+    </tbody></table>
+    
+    <br>
+    
+    <p>
+      A Tabela 1, abaixo, apresenta a sintaxe das diretivas de montagem e
+      os tipos de seus argumentos.
+    </p>
+    
+    <table border="4" align="center">
+      <tbody><tr><td><b>Sintaxe</b></td><td><b>Argumento 1</b></td><td><b>Argumento 2</b></td></tr>
+      <tr><td> .set   </td><td>SYM</td><td>HEX | DEC(0:2<sup>31</sup>-1)</td></tr>
+      <tr><td> .org   </td><td>HEX | DEC(0:1023)</td><td>  </td></tr>
+      <tr><td> .align </td><td>DEC(1:1023)</td><td>  </td></tr>
+      <tr><td> .wfill </td><td>DEC(1:1023)</td><td>HEX | DEC(-2<sup>31</sup>:2<sup>31</sup>-1) | ROT | SYM</td></tr>
+      <tr><td> .word  </td><td>HEX | DEC(0:2<sup>32</sup>-1) | ROT | SYM</td><td>  </td></tr>
+    </tbody></table>
+    <div align="center">
+      Tabela 1: Sintaxe das diretivas de montagem e os tipos dos argumentos.<br>
+    </div>
+    
+    <p>
+      O caractere "|" separa as opções. Por exemplo: a
+      diretiva <tt>.org</tt> pode receber como argumento um valor
+      hexadecimal (HEX) <b>ou</b> decimal no intervalo (0:1023). Dessa
+      forma, as linhas do seguinte programa são válidas:
+      </p><pre>	.org 0x0000000000
+	.org 0x000000000f
+	.org 100</pre>
+      enquanto que as seguintes linhas são inválidas
+      <pre>	.org 0x0000000000 | 10
+	.org -10
+	.org 0x000 20
+	.org</pre>
+    <p></p>
+
+    <p>
+      A descrição do comportamento de cada uma das diretivas está na
+      apostila de programação do computador IAS (<a target="_blank" href="http://www.ic.unicamp.br/~edson/disciplinas/mc404/2016-2s/abef/anexos/programando_o_IAS.pdf">programando_o_IAS.pdf</a>). 
+      Também podem ser encontradas nos <i>slides</i> das aulas.
+    </p>
+    
+
+    <h4>Instruções</h4>
+    
+    <p>
+      As instruções que requerem um endereço podem ser
+      descritas utilizando-se qualquer um dos seguintes formatos:
+      </p><ul>
+	<li><tt>mnemônico "HEX"</tt></li>
+	<li><tt>mnemônico "DEC(0:1023)"</tt></li>
+	<li><tt>mnemônico "ROT"</tt></li>
+      </ul>
+      As instruções que nao requerem o campo endereço possuem o
+      seguinte formato:
+      <ul>
+	<li><tt>mnemônico</tt></li>
+      </ul>
+    <p></p>
+
+    <p>
+      Note que no segundo campo é possível usar um endereço em
+      hexadecimal (HEX) ou decimal (DEC), ou o identificador de um
+      rótulo (sem o caractere ':'). O endereço, ou o rótulo, deve ser
+      descrito entre aspas duplas. Exemplos válidos são:
+      </p><pre>	ADD "laco"
+	SUB "0x00000000F4"</pre>
+    <p></p>
+    
+    <p> Algumas instruções não requerem o campo endereço (RSH, por
+      exemplo). Se o programa especificar o campo endereço para estas instruções, 
+      seu montador deve emitir uma mensagem de erro
+      e interromper a montagem.  Para as instruções que não requerem o
+      campo endereço seu montador deve preencher os <i>bits</i>
+      referentes ao campo endereço no mapa de memória com zeros.
+    </p>
+    
+    <p>
+      A Tabela 2, abaixo, apresenta os mnemônicos válidos e as
+      instruções que devem ser emitidas para cada um dos casos.
+    </p>
+    
+    <table border="4" align="center">
+      <tbody><tr><td><b>Mnemônico</b></td><td><b>Instrução a ser emitida</b></td></tr>
+      <tr><td>LD</td><td> LOAD M(X)</td></tr>
+      <tr><td>LD-</td><td> LOAD -M(X)</td></tr>
+      <tr><td>LD|</td><td> LOAD |M(X)|</td></tr>
+      <tr><td>LDmq</td><td>LOAD MQ</td></tr>
+      <tr><td>LDmq_mx</td><td> LOAD MQ,M(X)</td></tr>
+      <tr><td>ST</td><td> STOR M(X)</td></tr>
+      <tr><td rowspan="2">JMP</td> <td>JUMP M(X,0:19) se o alvo for
+      uma instrução à esquerda da palavra de memória (endereços do
+      tipo HEX ou DEC sempre indicam endereços à esquerda enquanto que
+      rótulos podem indicar endereços à esquerda ou direita).</td></tr>
+      <tr><td>JUMP M(X,20:39) se o alvo for uma instrução à direita de uma palavra de memória. </td></tr>
+      
+      <tr><td rowspan="2">JUMP+</td> <td>JUMP+M(X,0:19) se o alvo for
+      uma instrução à esquerda da palavra de memória (endereços do
+      tipo HEX ou DEC sempre indicam endereços à esquerda enquanto que
+      rótulos podem indicar endereços à esquerda ou direita).</td></tr>
+      <tr><td>JUMP+M(X,20:39) se o alvo for uma instrução à direita de uma palavra de memória.</td></tr>
+      
+      <tr><td>ADD</td><td>ADD M(X)</td></tr>
+      <tr><td>ADD|</td><td>ADD |M(X)|</td></tr>
+      <tr><td>SUB</td><td>SUB M(X)</td></tr>
+      <tr><td>SUB|</td><td>SUB |M(X)|</td></tr>
+      <tr><td>MUL</td><td>MUL M(X)</td></tr>
+      <tr><td>DIV</td><td>DIV M(X)</td></tr>
+      <tr><td>LSH</td><td>LSH</td></tr>
+      <tr><td>RSH</td><td>RSH</td></tr>
+	  
+      <tr><td rowspan="2">STaddr</td><td> STOR M(X,8:19) se X for o endereço de uma instrução à esquerda de uma palavra.</td></tr>
+      <tr><td>STOR M(X,28:39) se X for o endereço de uma instrução à direita de uma palavra. </td></tr>
+    </tbody></table>
+    
+    <div align="center">
+      Tabela 2: Mnemônicos válidos e as instruções que devem ser emitidas para cada um dos casos.
+    </div>
+    
+
+    <h4>Tratamento de erros</h4>
+    
+    <p>
+      Seu montador deve tratar erros. Sempre que houver um erro, seu
+      montador deve emitir uma mensagem de erro no arquivo de saída e
+      terminar a execução sem produzir o mapa de memória, ou seja, sem
+      escrever o mapa de memória no arquivo de saída. Caso o arquivo
+      de saída não tenha sido fornecido, a mensagem de erro dever ser
+      emitida na saída padrão e o mapa de memória não deve ser escrito
+      na saída padrão.
+    </p>
+
+    <p>
+      As mensagens de erro devem seguir o seguinte padrão:
+      </p><pre>ERROR on line XX
+mensagem!</pre>
+
+      onde <tt>XX</tt> é o número da linha do arquivo de entrada que
+      causou o erro e "mensagem" é a mensagem de erro. Esta mensagem
+      deve estar na linha subsequente à primeira. Exemplos:
+
+      <pre>ERROR on line 3
+addu is not a valid mnemonic!</pre>
+
+      <pre>ERROR on line 56
+0x00$02 is not a valid hex number!</pre>
+    <p></p>
+
+    <h3>Requisitos/informações da entrega</h3>
+    
+    <ul>
+      <li>
+	  Prazos de entrega do trabalho: 
+	  <ul>
+	    <li>
+	      17-10-2016, até as 23:59h - Fator de multiplicação 1.0x
+	    </li>
+	    <li>
+	      18-10-2016, até as 23:59h - Fator de multiplicação 0.8x
+	    </li>
+	    <li>
+	      19-10-2016, até as 13:59h - Fator de multiplicação 0.6x
+	    </li>
+	  </ul>
+      </li>
+      <li> A linguagem de programação a ser utilizada para desenvolver
+	o montador deve ser obrigatoriamente a <b>linguagem C</b>. Não
+	serão aceitos trabalhos que façam uso de alguma biblioteca
+	não-padrão, ou seja, apenas podem ser utilizadas as rotinas da
+	biblioteca padrão do compilador.
+      </li>
+      
+      <li> 
+	O trabalho é individual. Caso haja qualquer tentativa de fraude,
+	como plágio, todos os envolvidos serão desonrados com atribuição de
+	<b>nota 0</b> na média da disciplina.
+      </li>
+      
+      <li> 
+	Utilize a plataforma SuSy para entrega. O endereço da atividade
+	é: <a target="_blank" href="https://susy.ic.unicamp.br:9999/mc404abef/T1">
+	  https://susy.ic.unicamp.br:9999/mc404abef/T1</a> 
+      </li>
+
+      <li><b>O susy será configurado para corrigir o trabalho
+      parcialmente, ou seja, mensagens de erro e outros critérios
+      definidos neste enunciado serão corrigidos à parte.</b>
+      </li>
+      
+      <li> Deverão ser entregues todos os arquivos de código (.c) e
+	cabeçalhos (.h) do seu trabalho.
+      </li>
+
+      <li> Os arquivos de teste (em linguagem de montagem) terão no
+	máximo 4096 caracteres.
+      </li>
+
+      <li>
+	Caso não seja especificada por uma diretiva <tt>.org</tt>, a
+	posição inicial de montagem é no endereço 0 à esquerda.
+      </li>
+
+	
+    </ul>
+    
+    <h3>Dicas</h3>
+    
+    <ul>
+      <li> 
+	Consulte a apostila de programação do IAS (<a target="_blank" href="http://www.ic.unicamp.br/~edson/disciplinas/mc404/2016-2s/abef/anexos/programando_o_IAS.pdf">programando_o_IAS.pdf</a>)
+	para informações sobre a semântica das diretivas e a codificação das
+	instruções da linguagem de montagem.
+      </li>
+      
+      <li> Casos de teste propositalmente errados serão usados. O montador
+	não deve gerar um mapa de memória nesses
+	casos, nem mesmo parcial. Ele deve apontar erros e parar a montagem (veja a
+	seção de tratamento de erros).
+      </li>
+      
+      <li> O código-fonte do montador, em C, deve ser bem comentado e
+	organizado. Variáveis com nomes amigáveis, tabulações que
+	facilitem a leitura, etc serão levadas em conta na correção e
+	podem aumentar ou diminuir a nota.
+      </li>
+
+    </ul>
+          
+    <h3>Perguntas Frequentes e Outras Dúvidas</h3>
+    <p>
+      </p><ul>
+	<li>Tamanho máximo dos rótulos: 64 caracteres, incluindo o ":".</li>
+	<li>Tamanho máximo dos símbolos na diretiva .set: 64 caracteres.</li>
+	<li>Tamanho máximo do arquivo de entrada: 4096 bytes.</li>
+	<li>Tratamento de diretivas .word ou .wfill quando a posição
+	  de montagem estiver apontando para o lado direito de uma
+	  palavra de memória: interromper o processo de montagem com
+	  mensagem de erro.</li>
+	<li>Quando o parâmetro das instruções <tt>JMP</tt>, <tt>JUMP+</tt> ou <tt>STaddr</tt>
+	  for um número, em vez de rótulo, a instrução gerada deve
+	  considerar que o endereço é relativo à parte esquerda da
+	  palavra de memória.</li>
+	<li>O caractere TAB (\t) deve ser tratado como espaço? Sim.</li>
+
+	<li>Caso seja encontrada uma palavra reservada (por exemplo um
+	  mnemônico) como argumento da diretiva .set o que deve ser
+	  feito? Você pode ignorar este caso pois não serão realizados
+	  testes em que o argumento da diretiva <tt>set</tt> seja uma palavra
+	  reservada.
+	</li>
+
+	<li>A diretiva <tt>.set</tt> pode ser utilizada com uma palavra
+	  reservada, como um mnemônico? Não.</li>
+	<li>O que fazer caso o programa produza conteúdo de memória além das
+	  1024 palavras endereçáveis? O montador deve emitir um erro.</li>
+	<li>
+	  É necessário que a diretiva .set trate outros valores além
+	  de números, como mnemônicos ou rótulos em geral? Não, os
+	  casos de teste apenas vão contemplar <tt>.set SYM HEX |
+	  DEC(0:2<sup>31</sup>-1)</tt>, por
+	  exemplo, <tt>.set TEMP 23</tt>.
+	</li>
+      </ul>
+    <p></p>
+
+  
+
+
+</body></html>

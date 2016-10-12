@@ -9,12 +9,16 @@ int main(int argc, char *argv[]){
 	string nameFile;
 	FILE *source;
 	string word;
+	int address = 0;
 
 	/* writeMode is a flag
 	 * it marks if the exit will be
 	 * stdout = false
 	 * FILE = true*/
 	bool writeMode = false;
+
+	/*Structure to store labels*/
+	Head labels = startList();
 
 	/*Checking the valid parameters and defining the writing mode*/
 	if(argc <= 1){
@@ -31,7 +35,7 @@ int main(int argc, char *argv[]){
 
 	/*Getting Rotules*/
 	while(fscanf(source, " %s", word) != EOF){
-		
+
 		/*Passing Comment*/
 		if(word[0] == '#'){
 			finishLine(source);
@@ -39,11 +43,19 @@ int main(int argc, char *argv[]){
 		}
 		/*dbbg*/printf("%s\n", word);
 
+		//Verify if the word given is actually a label
+		if(checkLabel(word) == true){
+			insertList(labels, word, address);
+
+			/*dbbg*/printList(labels);
+		}
 	}
 
 	rewind(source);
 
 	/*dbbg*/printf("%d", writeMode);
+
+	deleteList(labels);
 
 	fclose(source);
 

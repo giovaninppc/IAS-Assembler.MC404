@@ -7,35 +7,42 @@
 #include "List.h"
 
 /*Inset a information node on the List*/
-void InsertList(Head head, string s, int value){
-
-	Node node, end;
+void insertList(Head head, string s, int value){
 
 	if(head == NULL){
-		head = malloc(sizeof(List));
-		head->value = value;
-		strcpy(head->info, s);
+		head = newNode(s, value);
 		return;
 	}
 
-	node = head;
+	Node node = head;
 	while(node->next != NULL){
 		node = node->next;
 	}
 
-	end = malloc(sizeof(List));
-	end = malloc(sizeof(List));
-	end->value = value;
-	strcpy(head->info, s);
+	node->next = newNode(s, value);
 
-	node->next = end;
+	head = node;
 
+}
+
+/*Create a new Node from the passed values*/
+Node newNode(string s, int value){
+	Node a;
+	a = malloc(sizeof(List));
+	a->value = value;
+	strcpy(a->info, s);
+	return a;
+}
+
+/*Start a List*/
+Node startList(){
+	return NULL;
 }
 
 /*Find a Node with the specifyed Sting
  *and return a pointer to that node
  *if not compatible, return NULL*/
-Node FindStringList (Head head, string s){
+Node findStringList (Head head, string s){
 
 	Node node;
 
@@ -53,13 +60,13 @@ Node FindStringList (Head head, string s){
 	return NULL;
 }
 
-void RemoveList(){
+void removeList(){
 
 
 }
 
 /*Free the memoty allocated by the List*/
-void DeleteList(Head head){
+void deleteList(Head head){
 
 	Node node1 = head, node2;
 
@@ -67,6 +74,18 @@ void DeleteList(Head head){
 		node2 = node1;
 		node1 = node1->next;
 		free(node2);
+	}
+
+}
+
+/*Print a List on stdout*/
+void printList(Head head){
+
+	Node node = head;
+
+	while(node != NULL){
+		printf("%s %d\n", node->info, node->value);
+		node = node->next;
 	}
 
 }
