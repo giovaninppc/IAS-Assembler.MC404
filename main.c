@@ -1,11 +1,7 @@
 /*Giovani Nascimento Pereira - 168609
  *Projeto MC404 - Montador IAS*/
 
-#ifndef _Libraries
-#define _Libraries
 #include "Header.h"
-#endif
-
 
 /*Begining the Main function*/
 int main(int argc, char *argv[]){
