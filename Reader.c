@@ -1,7 +1,10 @@
 /*Giovani Nascimento Pereira - 168609
  *Modulo para auxilio na leitura de arquivos*/
 
-#include "Header.h"
+#include "Reader.h"
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
 void finishLine (FILE *source){
 

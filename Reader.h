@@ -4,16 +4,9 @@
 #ifndef _reader
 #define _reader
 
-#include <stdio.h>
-#include "Bool.h"
-#include "Text.h"
 #include "List.h"
-
-
-typedef struct address{
-	int ad;
-	bool left;
-}address, Address;
+#include <stdio.h>
+#include <stdlib.h>
 
 
 void finishLine (FILE *source);

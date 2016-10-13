@@ -4,11 +4,7 @@
 #ifndef _Library
 #define _Library
 
-#include <stdio.h>
-#include <stdlib.h>
-#include "Bool.h"
-#include "Reader.h"
-
+#include "Text.h"
 
 typedef struct List{
 
@@ -22,12 +18,17 @@ typedef struct List{
 typedef struct List* Node;
 typedef struct List* Head;
 
+typedef struct address{
+	int ad;
+	bool left;
+}address, Address;
 
 void insertList(Head *head, string s, address value);
 Node findStringList (Head head, string s);
 void deleteList(Head head);
 void printList(Head head);
 Node newNode(string s, address value);
+Node startList();
 void removeList();
 
 #endif

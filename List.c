@@ -5,8 +5,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "List.h"
-#include "Reader.h"
-#include "Bool.h"
 
 
 /*Create a new Node from the passed values*/
