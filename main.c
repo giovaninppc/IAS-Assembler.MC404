@@ -45,7 +45,7 @@ int main(int argc, char *argv[]){
 
 		//Verify if the word given is actually a label
 		if(checkLabel(word) == true){
-			insertList(labels, word, address);
+			insertList(&labels, word, address);
 
 			/*dbbg*/printList(labels);
 		}

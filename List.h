@@ -19,7 +19,7 @@ typedef struct List{
 typedef struct List* Node;
 typedef struct List* Head;
 
-void insertList(Head head, string s, int value);
+void insertList(Head *head, string s, int value);
 Node findStringList (Head head, string s);
 void deleteList(Head head);
 void printList(Head head);

@@ -17,10 +17,11 @@ void finishLine (FILE *source){
 
 }
 
+/*Checkif a word passed by parameter is a valid Label
+ *valid labels end with ':' character*/
 bool checkLabel(string s){
 
 	int size = strlen(s);
-	printf("IN HERE %c\n", s[size-1]);
 	
 	if(s[size-1] == ':')
 		return true;

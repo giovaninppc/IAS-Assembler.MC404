@@ -7,21 +7,19 @@
 #include "List.h"
 
 /*Inset a information node on the List*/
-void insertList(Head head, string s, int value){
+void insertList(Head *head, string s, int value){
 
-	if(head == NULL){
-		head = newNode(s, value);
+	if(*head == NULL){
+		*head = newNode(s, value);
 		return;
 	}
 
-	Node node = head;
+	Node node = *head;
 	while(node->next != NULL){
 		node = node->next;
 	}
 
 	node->next = newNode(s, value);
-
-	head = node;
 
 }
 
@@ -31,10 +29,11 @@ Node newNode(string s, int value){
 	a = malloc(sizeof(List));
 	a->value = value;
 	strcpy(a->info, s);
+	a->next = NULL;
 	return a;
 }
 
-/*Start a List*/
+/*Start a List with a Null pointer*/
 Node startList(){
 	return NULL;
 }
