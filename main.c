@@ -26,9 +26,9 @@ int main(int argc, char *argv[]){
 
 	/*Checking the valid parameters and defining the writing mode*/
 	if(argc <= 1){
-		return 1; /*No input FILE is given*/
+		return 0; /*No input FILE is given*/
 	}
-	if(argc >= 2){
+	if(argc > 2){
 		writeMode = true; //Output file is given
 	}
 
