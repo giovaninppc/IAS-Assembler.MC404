@@ -44,7 +44,11 @@ void changeAddress(string s, address *ad, FILE *source){
 			return;
 		}
 		else if (strcmp(s, ".org") == 0){
-			
+			/*dbbg*/printf("DIRETIVA .ORG\n");
+			string orgSize;
+			fscanf(source, " %s", orgSize);
+			printf("%s\n", orgSize);
+			(*ad).ad = convertNumber(orgSize);
 			return;
 		}
 		else if (strcmp(s, ".allign") == 0){
@@ -71,6 +75,40 @@ void changeAddress(string s, address *ad, FILE *source){
 		oneStep(ad);
 	}
 
+}
+
+/*Convert a String into a int type number*/
+int convertNumber(string s){
+
+	int position = (int)strlen(s);
+
+	//The numbers should be rounded by "" characters
+	if(s[0] != '\"' || s[position - 1] != '\"'){
+		//NOT A VALID STRING!!! ERROR
+		return -1;
+	}
+
+	//if hexadecimal number
+	if(s[1] == '0' && s[2] == 'x'){
+		//CONVERSAO DE HEXADECIMAL EM DECIMAL
+		return 0;
+	}
+
+	//if decimal number
+	string num;
+	for(int i=0; i<position-1; i++){
+		num[i] = s[i+1];
+	}
+	num[position-1] = '\0';
+
+	/*dbbg*/ printf("NUM %s ", num);
+	
+	int exit;
+	for(int i=strlen(num)-1, x=1; i>=0; i++, x*=10){
+		exit = (int) x * (num[i] - '0');
+	}
+	/*dbbg*/printf("VALOR CONVERTIDO: %d", exit);
+	return exit;
 }
 
 /*Move one step forward on the address given by parameter*/
@@ -101,7 +139,7 @@ void getLabels(FILE *source, Head *labels){
 				finishLine(source);
 				continue;
 			}
-			/*dbbg*/printf("%s\n", word);
+			/*dbbg*/printf("%s %d\n", word, (int)strlen(word));
 
 			//Change the addres depending on the command
 			changeAddress(word, &place, source);

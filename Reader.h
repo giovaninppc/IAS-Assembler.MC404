@@ -13,5 +13,6 @@ void finishLine (FILE *source);
 bool checkLabel(string s);
 void getLabels(FILE *source, Head *labels);
 void oneStep(address *ad);
+int convertNumber(string s);
 
 #endif
