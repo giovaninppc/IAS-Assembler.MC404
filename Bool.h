@@ -5,6 +5,6 @@
 #define _Bool
 
 typedef int bool;
-enum bool {true, false};
+enum bool {false, true};
 
 #endif

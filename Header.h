@@ -8,11 +8,11 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
+#include "List.h"
 #include "Reader.h"
 #include "Reader.c"
 #include "Bool.h"
 #include "Text.h"
-#include "List.h"
 #include "List.c"
 
 #endif

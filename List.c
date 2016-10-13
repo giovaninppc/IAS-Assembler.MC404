@@ -5,9 +5,23 @@
 #include <stdlib.h>
 #include <string.h>
 #include "List.h"
+#include "Reader.h"
+#include "Bool.h"
+
+
+/*Create a new Node from the passed values*/
+Node newNode(string s, address value){
+	Node a;
+	a = malloc(sizeof(List));
+	a->value = value.ad;
+	strcpy(a->info, s);
+	a->next = NULL;
+	a->left = value.left;
+	return a;
+}
 
 /*Inset a information node on the List*/
-void insertList(Head *head, string s, int value){
+void insertList(Head *head, string s, address value){
 
 	if(*head == NULL){
 		*head = newNode(s, value);
@@ -21,16 +35,6 @@ void insertList(Head *head, string s, int value){
 
 	node->next = newNode(s, value);
 
-}
-
-/*Create a new Node from the passed values*/
-Node newNode(string s, int value){
-	Node a;
-	a = malloc(sizeof(List));
-	a->value = value;
-	strcpy(a->info, s);
-	a->next = NULL;
-	return a;
 }
 
 /*Start a List with a Null pointer*/
@@ -83,7 +87,7 @@ void printList(Head head){
 	Node node = head;
 
 	while(node != NULL){
-		printf("%s %d\n", node->info, node->value);
+		printf("%s %d left: %d\n", node->info, node->value, node->left);
 		node = node->next;
 	}
 
