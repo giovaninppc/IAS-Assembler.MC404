@@ -36,6 +36,11 @@ int main(int argc, char *argv[]){
 	strcpy(nameFile, argv[1]);
 	source = fopen(nameFile, "r");
 
+	if(source == NULL){
+		printf("houve um erro na abertura do arquivo\n");
+		return 1;
+	}
+
 	/*Getting Labels*/
 	getLabels(source, &labels);
 	printList(labels);

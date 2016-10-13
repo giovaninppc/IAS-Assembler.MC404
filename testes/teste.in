@@ -3,5 +3,7 @@ label2:
 
 chugar: .org 123
 
+.allign 3
+
 palmatoria: ADD 123
 glamour:

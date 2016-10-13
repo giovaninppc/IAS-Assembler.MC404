@@ -44,37 +44,53 @@ void changeAddress(string s, address *ad, FILE *source){
 			return;
 		}
 		else if (strcmp(s, ".org") == 0){
-			/*dbbg*/printf("DIRETIVA .ORG\n");
 			string orgSize;
 			fscanf(source, " %s", orgSize);
 			printf("%s %d\n", orgSize, (int)strlen(orgSize));
 			(*ad).ad = convertNumber(orgSize);
 			return;
 		}
+		else if (strcmp(s, ".wfill") == 0){
+			//wfill, falta considerar o hexadecimal
+			string wfillSize;
+			fscanf(source, " %s", wfillSize);
+			printf("%s %d\n", wfillSize, (int)strlen(wfillSize));
+			(*ad).ad = ad->ad + convertNumber(wfillSize);
+			return;
+		}
 		else if (strcmp(s, ".allign") == 0){
-
+			int allign;
+			fscanf(source, "%d", &allign);
+			if(ad->left == false){
+				(*ad).ad = ad->ad + 1;
+				(*ad).left = true;
+			}
+			if(ad->ad % allign != 0){
+				(*ad).ad = ad->ad + allign - (ad->ad % allign);
+			}
 			return;
 		}
 	}
 
 	//Checking for regular commands
 	//Load commands
-	if(strcmp(s, "LD")==0 || strcmp(s, "LD-")==0 || strcmp(s, "LD|")==0 || strcmp(s, "LDmq")==0 || strcmp(s, "LDmq_mx")==0){
+	if(checkRegularCommand(s)){
 		oneStep(ad);
 	}
 
-	if(strcmp(s, "ST")==0 || strcmp(s, "STaddr")==0 || strcmp(s, "LSH")==0 || strcmp(s, "RSH")==0 || strcmp(s, "JMP")==0){
-		oneStep(ad);
-	}
+}
 
-	if(strcmp(s, "ADD")==0 || strcmp(s, "SUB")==0 || strcmp(s, "ADD|")==0 || strcmp(s, "SUB|")==0){
-		oneStep(ad);
+/*Check if the command given by paameter is a valid command mnemonic*/
+bool checkRegularCommand(string s){
+	if(strcmp(s, "LD")==0 || strcmp(s, "LD-")==0 || strcmp(s, "LD|")==0 || 
+		strcmp(s, "LDmq")==0 || strcmp(s, "LDmq_mx")==0 || strcmp(s, "ST")==0 || 
+		strcmp(s, "STaddr")==0 || strcmp(s, "LSH")==0 || strcmp(s, "RSH")==0 || 
+		strcmp(s, "JMP")==0 || strcmp(s, "ADD")==0 || strcmp(s, "SUB")==0 || 
+		strcmp(s, "ADD|")==0 || strcmp(s, "SUB|")==0 || strcmp(s, "DIV")==0 || 
+		strcmp(s, "MUL")==0 || strcmp(s, "JUMP+")==0){
+		return true;
 	}
-
-	if(strcmp(s, "DIV")==0 || strcmp(s, "MUL")==0 || strcmp(s, "JUMP+")==0){
-		oneStep(ad);
-	}
-
+	return false;
 }
 
 /*Convert a String into a int type number*/
