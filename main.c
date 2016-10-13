@@ -47,6 +47,8 @@ int main(int argc, char *argv[]){
 
 	/*dbbg*/printf("write Mode: %d\n", writeMode);
 
+	printf("TESTE\n\n hexadecimal  %.3x\n alinhamento %.3x %.3d\n\n", 10, 127, 127);
+
 	deleteList(labels);
 	fclose(source);
 
