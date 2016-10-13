@@ -7,3 +7,5 @@ chugar: .org 123
 
 palmatoria: ADD 123
 glamour:
+
+.set AMOR 0x000000001a

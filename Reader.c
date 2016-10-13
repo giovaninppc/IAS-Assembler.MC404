@@ -70,11 +70,18 @@ void changeAddress(string s, address *ad, FILE *source){
 			}
 			return;
 		}
+		else if(strcmp(s, ".set")){
+			//It doesnt jump addresses, but its not an error
+			return;
+		}
+		else {
+			//DIRETIVA INVALIDA
+		}
 	}
 
 	//Checking for regular commands
 	//Load commands
-	if(checkRegularCommand(s)){
+	else if(checkRegularCommand(s)){
 		oneStep(ad);
 	}
 
@@ -101,7 +108,38 @@ int convertNumber(string s){
 	//if hexadecimal number
 	if(s[0] == '0' && s[1] == 'x'){
 		//CONVERSAO DE HEXADECIMAL EM DECIMAL
-		return 0;
+		int exit = 0;
+		for(int i=position-1, x=1; i>=2; i--, x*=16){
+			if(s[i] >= '0' && s[i] <= '9'){
+				exit += (int) x * (s[i] - '0');
+			}
+			else{
+				switch (s[i]){
+					case 'a':
+						exit += (int) x * (10);
+						break;
+					case 'b':
+						exit += (int) x * (11);
+						break;
+					case 'c':
+						exit += (int) x * (12);
+						break;
+					case 'd':
+						exit += (int) x * (13);
+						break;
+					case 'e':
+						exit += (int) x * (14);
+						break;
+					case 'f':
+						exit += (int) x * (15);
+						break;
+					default:
+						//ERROR
+						break;
+				}
+			}
+		}
+		return exit;
 	}
 
 	//if decimal number
@@ -109,7 +147,6 @@ int convertNumber(string s){
 	for(int i=position-1, x=1; i>=0; i--, x*=10){
 		exit += (int) x * (s[i] - '0');
 	}
-	/*dbbg*/printf("VALOR CONVERTIDO: %d\n", exit);
 	return exit;
 }
 
@@ -124,6 +161,18 @@ void oneStep(address *ad){
 			(*ad).ad = ad->ad + 1;
 			return;
 	}
+}
+
+/**/
+void addSet(FILE *source, Head *labels){
+
+	string set, number;
+	fscanf(source, " %s", set);
+	fscanf(source, " %s", number);
+	Address a;
+	a.ad = convertNumber(number);
+	a.left = -1;
+	insertList(labels, set, a);
 }
 
 /*Get the labels from the document*/
@@ -141,7 +190,7 @@ void getLabels(FILE *source, Head *labels){
 				finishLine(source);
 				continue;
 			}
-			/*dbbg*/printf("%s %d\n", word, (int)strlen(word));
+			// dbbg printf("%s %d\n", word, (int)strlen(word));
 
 			//Change the addres depending on the command
 			changeAddress(word, &place, source);
@@ -149,6 +198,10 @@ void getLabels(FILE *source, Head *labels){
 			//Verify if the word given is actually a label
 			if(checkLabel(word)){
 				insertList(labels, word, place);
+			}
+
+			if(strcmp(word, ".set") == 0){
+				addSet(source, labels);
 			}
 	}
 }

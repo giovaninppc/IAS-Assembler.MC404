@@ -35,7 +35,6 @@ int main(int argc, char *argv[]){
 	/*Opening FILE to use*/
 	strcpy(nameFile, argv[1]);
 	source = fopen(nameFile, "r");
-
 	if(source == NULL){
 		printf("houve um erro na abertura do arquivo\n");
 		return 1;
@@ -47,7 +46,7 @@ int main(int argc, char *argv[]){
 
 	rewind(source);
 
-	/*dbbg*/printf("%d", writeMode);
+	/*dbbg*/printf("%d\n", writeMode);
 
 	deleteList(labels);
 	fclose(source);
