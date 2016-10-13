@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
-#include "Reader.h"
+#include "reader.h"
 
 
 /*Begining the Main function*/
@@ -18,7 +18,6 @@ int main(int argc, char *argv[]){
 	 * it marks if the exit will be
 	 * stdout = false
 	 * FILE = true*/
-
 	bool writeMode = false;
 
 	/*Structure to store labels*/
@@ -46,7 +45,7 @@ int main(int argc, char *argv[]){
 
 	rewind(source);
 
-	/*dbbg*/printf("%d\n", writeMode);
+	/*dbbg*/printf("write Mode: %d\n", writeMode);
 
 	deleteList(labels);
 	fclose(source);

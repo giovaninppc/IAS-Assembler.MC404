@@ -4,7 +4,7 @@
 #ifndef _Library
 #define _Library
 
-#include "Text.h"
+#include "text.h"
 
 typedef struct List{
 

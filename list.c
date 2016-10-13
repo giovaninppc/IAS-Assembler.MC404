@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "List.h"
+#include "list.h"
 
 
 /*Create a new Node from the passed values*/

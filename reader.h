@@ -4,7 +4,7 @@
 #ifndef _reader
 #define _reader
 
-#include "List.h"
+#include "list.h"
 #include <stdio.h>
 #include <stdlib.h>
 

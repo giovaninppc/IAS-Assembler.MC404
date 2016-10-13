@@ -1,7 +1,7 @@
 /*Giovani Nascimento Pereira - 168609
  *Modulo para auxilio na leitura de arquivos e retirada de Rotulos*/
 
-#include "Reader.h"
+#include "reader.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -46,7 +46,7 @@ void changeAddress(string s, address *ad, FILE *source){
 		else if (strcmp(s, ".org") == 0){
 			string orgSize;
 			fscanf(source, " %s", orgSize);
-			printf("%s %d\n", orgSize, (int)strlen(orgSize));
+			//printf("%s %d\n", orgSize, (int)strlen(orgSize));
 			(*ad).ad = convertNumber(orgSize);
 			return;
 		}
@@ -54,7 +54,7 @@ void changeAddress(string s, address *ad, FILE *source){
 			//wfill, falta considerar o hexadecimal
 			string wfillSize;
 			fscanf(source, " %s", wfillSize);
-			printf("%s %d\n", wfillSize, (int)strlen(wfillSize));
+			//printf("%s %d\n", wfillSize, (int)strlen(wfillSize));
 			(*ad).ad = ad->ad + convertNumber(wfillSize);
 			return;
 		}
