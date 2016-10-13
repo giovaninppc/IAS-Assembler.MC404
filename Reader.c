@@ -1,5 +1,5 @@
 /*Giovani Nascimento Pereira - 168609
- *Modulo para auxilio na leitura de arquivos*/
+ *Modulo para auxilio na leitura de arquivos e retirada de Rotulos*/
 
 #include "Reader.h"
 #include <stdio.h>
