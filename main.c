@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
-#include "memorymap.h"
+#include "exit.h"
 
 
 /*Begining the Main function*/
@@ -45,18 +45,14 @@ int main(int argc, char *argv[]){
 
 	/*Getting Labels*/
 	getLabels(source, &labels);
-	printList(labels);
-
 	rewind(source);
 
+	/*reating Memory Map*/
 	createMemorymap(source, labels, map);
 
-	printf("\n\n\tMEMORY MAP\n\n");
-	for(int i=0; strlen(map[i]) > 0; i++){
-		printf("%s\n", map[i]);
-	}
+	/*Printing Answer*/
+	out(map, writeMode);
 
-	/*dbbg*/printf("write Mode: %d\n", writeMode);
 
 	deleteList(labels);
 	fclose(source);

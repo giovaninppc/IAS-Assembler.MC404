@@ -145,9 +145,7 @@ void createMemorymap(FILE *source, Head labels, string *map){
 				else{
 					string w;
 					fscanf(source, " %s", w);
-					printf("WORD W %s\n", w);
 					convertToStringSize10(w, labels);
-					printf("WORD W2 %s\n", w);
 					writeWordOnMap(w, ad, map, &printLine, labels);
 					ad.ad = ad.ad +1;
 				}
@@ -162,7 +160,6 @@ void createMemorymap(FILE *source, Head labels, string *map){
 					int v;
 					fscanf(source, "%d", &v);
 					fscanf(source, " %s", w);
-					printf("IN HERE .wfill\n");
 					convertToStringSize10(w, labels);
 					for(int i=0; i<v; i++){
 						writeWordOnMap(w, ad, map, &printLine, labels);
