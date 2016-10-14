@@ -83,7 +83,7 @@ void createMemorymap(FILE *source, Head labels, string *map){
 				string st;
 				fscanf(source, " %s", st);
 				convertToStringSize3(st, labels);
-				writeMap("09", st, ad, labels, map, &printLine);
+				writeMap("21", st, ad, labels, map, &printLine);
 			}
 			else if(strcmp(word, "STaddr") == 0){
 				
@@ -118,13 +118,13 @@ void createMemorymap(FILE *source, Head labels, string *map){
 				string ld;
 				fscanf(source, " %s", ld);
 				convertToStringSize3(ld, labels);
-				writeMap("0b", ld, ad, labels, map, &printLine);
+				writeMap("0C", ld, ad, labels, map, &printLine);
 			}
 			else if(strcmp(word, "MUL") == 0){
 				string ld;
 				fscanf(source, " %s", ld);
 				convertToStringSize3(ld, labels);
-				writeMap("0a", ld, ad, labels, map, &printLine);
+				writeMap("0B", ld, ad, labels, map, &printLine);
 			}
 
 			//JUMPs
