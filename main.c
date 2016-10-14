@@ -12,7 +12,7 @@
 int main(int argc, char *argv[]){
 
 	string nameFile;
-	FILE *source;
+	FILE *source = NULL, *output = NULL;
 	string map[1024];
 
 	for(int i=0; i<1024; i++)
@@ -31,8 +31,9 @@ int main(int argc, char *argv[]){
 	if(argc <= 1){
 		return 0; /*No input FILE is given*/
 	}
+	//Output file is given / Opening File
 	if(argc > 2){
-		writeMode = true; //Output file is given
+		writeMode = true;
 	}
 
 	/*Opening FILE to use*/
@@ -43,6 +44,18 @@ int main(int argc, char *argv[]){
 		return 1;
 	}
 
+	/*Opening Out File*/
+	if(writeMode == true && output == NULL){
+		string outputFile;
+		strcpy(outputFile, argv[2]);
+		output = fopen(outputFile, "w");
+		
+		if(outputFile == NULL){
+			printf("houve um erro na abertura do arquivo\n");
+			return 1;
+		}
+	}
+
 	/*Getting Labels*/
 	getLabels(source, &labels);
 	rewind(source);
@@ -51,9 +64,9 @@ int main(int argc, char *argv[]){
 	createMemorymap(source, labels, map);
 
 	/*Printing Answer*/
-	out(map, writeMode);
+	out(map, writeMode, output);
 
-
+	/*Freeing alocatted memory and closing files*/
 	deleteList(labels);
 	fclose(source);
 

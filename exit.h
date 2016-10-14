@@ -5,6 +5,6 @@
 
 #include "memorymap.h"
 
-void out(string *map, int writeMode);
+void out(string *map, int writeMode, FILE *output);
 
 #endif

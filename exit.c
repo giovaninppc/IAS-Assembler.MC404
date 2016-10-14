@@ -7,11 +7,24 @@
 #include "text.h"
 #include "exit.h"
 
-void out(string *map, int writeMode){
+/*Function out: print the answer
+ (Memory map or ERROR message)
+ on the correct output:
+ writeMode == true => archive
+ writeMode == false => stdout*/
+void out(string *map, int writeMode, FILE *output){
 
+	//Printing on stdout
 	if(writeMode == false){
 		for(int i=0; strlen(map[i]) > 0; i++){
 			printf("%s\n", map[i]);
+		}
+	}
+
+	//Print on exit archive
+	else if(writeMode == true){
+		for(int i=0; strlen(map[i]) > 0; i++){
+			fprintf(output, "%s\n", map[i]);
 		}
 	}
 }

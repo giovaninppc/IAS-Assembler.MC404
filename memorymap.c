@@ -170,7 +170,6 @@ void createMemorymap(FILE *source, Head labels, string *map){
 		}
 
 		updateAddress(word, &ad, source);
-
 	}
 
 	if(ad.left == false){
@@ -329,6 +328,7 @@ void writeWordOnMap(string word, address ad, string *map, int *printLine, Head l
 	for(int i=0, j=0; i<= 10; i++, j++){
 		map[*printLine][size + j] = word[i];
 		if(j == 1 || j == 5 || j == 8){
+			map[*printLine][size + j + 1] = 0;
 			strcat(map[*printLine], " ");
 			j++;
 		}

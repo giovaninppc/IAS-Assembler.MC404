@@ -125,22 +125,22 @@ int convertNumber(string s){
 			}
 			else{
 				switch (s[i]){
-					case 'a':
+					case 'A':
 						exit += (int) x * (10);
 						break;
-					case 'b':
+					case 'B':
 						exit += (int) x * (11);
 						break;
-					case 'c':
+					case 'C':
 						exit += (int) x * (12);
 						break;
-					case 'd':
+					case 'D':
 						exit += (int) x * (13);
 						break;
-					case 'e':
+					case 'E':
 						exit += (int) x * (14);
 						break;
-					case 'f':
+					case 'F':
 						exit += (int) x * (15);
 						break;
 					default:
