@@ -1,5 +1,5 @@
 /*Giovani Nascimento Pereira - 16809
- *Mudulo para implementação de Lista.c*/
+ *Mudulo para implementação de Lista .c*/
 
 #include <stdio.h>
 #include <stdlib.h>
