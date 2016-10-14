@@ -57,6 +57,7 @@ void changeAddress(string s, address *ad, FILE *source){
 			fscanf(source, " %s", orgSize);
 			//printf("%s %d\n", orgSize, (int)strlen(orgSize));
 			(*ad).ad = convertNumber(orgSize);
+			(*ad).left = 1;
 			return;
 		}
 		else if (strcmp(s, ".wfill") == 0){
@@ -206,11 +207,20 @@ void getLabels(FILE *source, Head *labels){
 
 			//Verify if the word given is actually a label
 			if(checkLabel(word)){
+				removeDots(word);
 				insertList(labels, word, place);
 			}
 
 			if(strcmp(word, ".set") == 0){
 				addSet(source, labels);
 			}
+	}
+}
+
+/*Remove te caracter : at the end of a string*/
+void removeDots(string s){
+	int size = strlen(s);
+	if(s[size-1] == ':'){
+		s[size-1] = 0;
 	}
 }

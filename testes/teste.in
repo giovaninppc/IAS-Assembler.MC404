@@ -1,29 +1,19 @@
-label:
+label1:
 label2:
-LD 1234
 
-chugar: .org 123
 
-.allign 3
+RSH
+LSH
+RSH
 
-palmatoria: ADD 123
-
-.allign 5
-shabluf:
-
-glamour:
-
-.set AMOR 0x000000001a
-.word 23
-.word 32
 .org 10
-novolabel:
-LD- "23"
-LD "12"
-LD "19"
+label3:
 LD "10"
-novolabel2:
+LD- "11"
 
-.org 0x0000000000
+.word "10"
+.word "0x0000015555"
+.word "label1"
+.word "label3"
 
-label:errado:
+.wfill 10 15

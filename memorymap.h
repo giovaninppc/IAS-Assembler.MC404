@@ -11,7 +11,9 @@
 void createMemorymap(FILE *source, Head labels, string *map);
 void updateAddress(string s, address *ad, FILE *source);
 void writeMap(string op, string add, address ad, Head labels, string *map, int *printLine);
+void writeWordOnMap(string word, address ad, string *map, int *printLine, Head labels);
 bool checkDirective(string s);
 void convertToStringSize3(string s, Head labels);
+void convertToStringSize10(string s, Head labels);
 
 #endif

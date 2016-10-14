@@ -52,13 +52,11 @@ int main(int argc, char *argv[]){
 	createMemorymap(source, labels, map);
 
 	printf("\n\n\tMEMORY MAP\n\n");
-	for(int i=0; i< 3; i++){
+	for(int i=0; strlen(map[i]) > 0; i++){
 		printf("%s\n", map[i]);
 	}
 
 	/*dbbg*/printf("write Mode: %d\n", writeMode);
-
-	printf("TESTE\n\n hexadecimal  %.3x\n alinhamento %.3x %.3d\n\n", 10, 127, 127);
 
 	deleteList(labels);
 	fclose(source);

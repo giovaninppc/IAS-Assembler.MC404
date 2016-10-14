@@ -37,47 +37,203 @@ void createMemorymap(FILE *source, Head labels, string *map){
 		}
 
 		else if(checkRegularCommand(word)){
+
+			//LOADs
 			if(strcmp(word, "LD") == 0){
 				string ld;
 				fscanf(source, " %s", ld);
 				convertToStringSize3(ld, labels);
 				writeMap("01", ld, ad, labels, map, &printLine);
 			}
-			if(strcmp(word, "LD-") == 0){
+			else if(strcmp(word, "LD-") == 0){
 				string ld;
 				fscanf(source, " %s", ld);
 				convertToStringSize3(ld, labels);
 				writeMap("02", ld, ad, labels, map, &printLine);
 			}
-			if(strcmp(word, "LD|") == 0){
+			else if(strcmp(word, "LD|") == 0){
 				string ld;
 				fscanf(source, " %s", ld);
 				convertToStringSize3(ld, labels);
 				writeMap("03", ld, ad, labels, map, &printLine);
 			}
-			if(strcmp(word, "LDmq") == 0){
+			else if(strcmp(word, "LDmq") == 0){
 				string ld;
 				fscanf(source, " %s", ld);
 				convertToStringSize3(ld, labels);
 				writeMap("0a", ld, ad, labels, map, &printLine);
 			}
-			if(strcmp(word, "LDmq_mx") == 0){
+			else if(strcmp(word, "LDmq_mx") == 0){
 				string ld;
 				fscanf(source, " %s", ld);
 				convertToStringSize3(ld, labels);
 				writeMap("09", ld, ad, labels, map, &printLine);
 			}
+
+			//Position Changes
+			else if(strcmp(word, "LSH") == 0){
+				writeMap("14", "000", ad, labels, map, &printLine);
+			}
+			else if(strcmp(word, "RSH") == 0){
+				writeMap("15", "000", ad, labels, map, &printLine);
+			}
+
+			//STOREs
+			else if(strcmp(word, "ST") == 0){
+				string st;
+				fscanf(source, " %s", st);
+				convertToStringSize3(st, labels);
+				writeMap("09", st, ad, labels, map, &printLine);
+			}
+			else if(strcmp(word, "STaddr") == 0){
+				
+			}
+
+			//MATHs
+			else if(strcmp(word, "ADD") == 0){
+				string ld;
+				fscanf(source, " %s", ld);
+				convertToStringSize3(ld, labels);
+				writeMap("05", ld, ad, labels, map, &printLine);
+			}
+			else if(strcmp(word, "SUB") == 0){
+				string ld;
+				fscanf(source, " %s", ld);
+				convertToStringSize3(ld, labels);
+				writeMap("06", ld, ad, labels, map, &printLine);
+			}
+			else if(strcmp(word, "ADD|") == 0){
+				string ld;
+				fscanf(source, " %s", ld);
+				convertToStringSize3(ld, labels);
+				writeMap("07", ld, ad, labels, map, &printLine);
+			}
+			else if(strcmp(word, "SUB|") == 0){
+				string ld;
+				fscanf(source, " %s", ld);
+				convertToStringSize3(ld, labels);
+				writeMap("08", ld, ad, labels, map, &printLine);
+			}
+			else if(strcmp(word, "DIV") == 0){
+				string ld;
+				fscanf(source, " %s", ld);
+				convertToStringSize3(ld, labels);
+				writeMap("0b", ld, ad, labels, map, &printLine);
+			}
+			else if(strcmp(word, "MUL") == 0){
+				string ld;
+				fscanf(source, " %s", ld);
+				convertToStringSize3(ld, labels);
+				writeMap("0a", ld, ad, labels, map, &printLine);
+			}
+
+			//JUMPs
+			else if(strcmp(word, "JMP") == 0){
+			}
+			else if(strcmp(word, "JUMP+") == 0){
+			}
 		}
 
 		else if(checkDirective(word)){
-
-			if(strcmp(word, ".word") == 0);
+			
+			if(strcmp(word, ".word") == 0){
+				
+				if(ad.left == false){
+					//ERROR
+					printf("ERROR AKI\n\n");
+				}
+				else{
+					string w;
+					fscanf(source, " %s", w);
+					printf("WORD W %s\n", w);
+					convertToStringSize10(w, labels);
+					printf("WORD W2 %s\n", w);
+					writeWordOnMap(w, ad, map, &printLine, labels);
+					ad.ad = ad.ad +1;
+				}
+			}
+			if(strcmp(word, ".wfill") == 0){
+				if(ad.left == false){
+					//ERROR
+					printf("ERROR AKI\n\n");
+				}
+				else{
+					string w;
+					int v;
+					fscanf(source, "%d", &v);
+					fscanf(source, " %s", w);
+					printf("IN HERE .wfill\n");
+					convertToStringSize10(w, labels);
+					for(int i=0; i<v; i++){
+						writeWordOnMap(w, ad, map, &printLine, labels);
+						ad.ad = ad.ad +1;
+					}
+				}
+			}
 		}
 
 		updateAddress(word, &ad, source);
 
 	}
 
+	if(ad.left == false){
+		writeMap("00", "000", ad, labels, map, &printLine);
+	}
+
+}
+
+/*Convert a number entrance, as an address to the format of the memry map*/
+void convertToStringSize10(string s, Head labels){
+	int size = strlen(s);
+
+	//Removing ""
+	if(s[0] == '\"'){
+		for(int i=0; i<size-2; i++){
+			s[i] = s[i+1];
+		}
+		s[size-2] = '\0';
+	}
+
+	Node n = findStringList(labels, s);
+	//Encontramos um label!
+	if(n != NULL){
+		//it belongs to the labels
+		sprintf (s, "%d", n->value);
+	}
+
+	//Hexadecimal
+	size = strlen(s);
+	if(s[0] == '0' && s[0] == 'x'){
+		for(int i=0; i<size-1; i++){
+			s[i] = s[i+2];
+		}
+		return;
+	}
+
+	int quotient = convertNumber(s);
+	string hexadecimalNumber;
+	int i = 0;
+
+    while(quotient!=0){
+        int temp = quotient % 16;
+
+	    //To convert integer into character
+	    if( temp < 10)
+	        temp = temp + 48;
+	    else
+	        temp = temp + 'A' - 10;
+
+	    hexadecimalNumber[i++] = temp;
+	    quotient = quotient / 16;
+    }
+    hexadecimalNumber[i] = 0;
+
+	//decimal
+	strcpy(s, "0000000000");
+	size = strlen(hexadecimalNumber);
+	for(i = 0; i< size; i++){
+		s[9-i] = hexadecimalNumber[i];
+	}
 }
 
 /*Convert a number entrance, as an address to the format of the memry map*/
@@ -94,8 +250,7 @@ void convertToStringSize3(string s, Head labels){
 	//Encontramos um label!
 	if(n != NULL){
 		//it belongs to the labels
-
-		return;
+		sprintf (s, "%d", n->value);
 	}
 
 	//Hexadecimal
@@ -119,7 +274,7 @@ void convertToStringSize3(string s, Head labels){
 	    if( temp < 10)
 	        temp = temp + 48;
 	    else
-	        temp = temp + 'a' - 10;
+	        temp = temp + 'A' - 10;
 
 	    hexadecimalNumber[i++] = temp;
 	    quotient = quotient / 16;
@@ -137,7 +292,10 @@ void convertToStringSize3(string s, Head labels){
 void writeMap(string op, string add, address ad, Head labels, string *map, int *printLine){
 
 	if(ad.left == true){
+
+		//There was a address change befor this command
 		if(strlen(map[*printLine]) != 0){
+			strcat(map[*printLine], " 00 000");
 			*printLine = *printLine + 1;
 		}
 		string k;
@@ -161,6 +319,26 @@ void writeMap(string op, string add, address ad, Head labels, string *map, int *
 
 }
 
+void writeWordOnMap(string word, address ad, string *map, int *printLine, Head labels){
+
+	//Adding right position on the map
+	string k;
+	sprintf (k, "\"%d\"", ad.ad);
+	convertToStringSize3(k, labels);
+	strcat(map[*printLine], k);
+	strcat(map[*printLine], " ");
+
+	int size = strlen(map[*printLine]);
+	for(int i=0, j=0; i<= 10; i++, j++){
+		map[*printLine][size + j] = word[i];
+		if(j == 1 || j == 5 || j == 8){
+			strcat(map[*printLine], " ");
+			j++;
+		}
+	}
+	*printLine = *printLine + 1;
+}
+
 /*Check if the parameter string is a valid Directive*/
 bool checkDirective(string s){
 
@@ -177,8 +355,8 @@ void updateAddress(string s, address *ad, FILE *source){
 		if (strcmp(s, ".org") == 0){
 			string orgSize;
 			fscanf(source, " %s", orgSize);
-			//printf("%s %d\n", orgSize, (int)strlen(orgSize));
 			(*ad).ad = convertNumber(orgSize);
+			(*ad).left = 1;
 			return;
 		}
 		else if (strcmp(s, ".allign") == 0){

@@ -16,5 +16,6 @@ void oneStep(address *ad);
 int convertNumber(string s);
 void startAddress(address *a);
 bool checkRegularCommand(string s);
+void removeDots(string s);
 
 #endif
