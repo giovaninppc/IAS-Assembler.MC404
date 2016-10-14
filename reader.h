@@ -14,6 +14,7 @@ bool checkLabel(string s);
 void getLabels(FILE *source, Head *labels);
 void oneStep(address *ad);
 int convertNumber(string s);
+void startAddress(address *a);
 bool checkRegularCommand(string s);
 
 #endif

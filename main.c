@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
-#include "reader.h"
+#include "memorymap.h"
 
 
 /*Begining the Main function*/
@@ -13,6 +13,10 @@ int main(int argc, char *argv[]){
 
 	string nameFile;
 	FILE *source;
+	string map[1024];
+
+	for(int i=0; i<1024; i++)
+		map[i][0] = 0;
 
 	/* writeMode is a flag
 	 * it marks if the exit will be
@@ -44,6 +48,13 @@ int main(int argc, char *argv[]){
 	printList(labels);
 
 	rewind(source);
+
+	createMemorymap(source, labels, map);
+
+	printf("\n\n\tMEMORY MAP\n\n");
+	for(int i=0; i< 3; i++){
+		printf("%s\n", map[i]);
+	}
 
 	/*dbbg*/printf("write Mode: %d\n", writeMode);
 

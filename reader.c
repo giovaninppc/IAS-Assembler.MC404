@@ -4,6 +4,7 @@
 #include "reader.h"
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 #include <stdlib.h>
 
 void finishLine (FILE *source){
@@ -21,14 +22,22 @@ bool checkLabel(string s){
 
 	int size = strlen(s);
 	
-	if(s[size-1] == ':')
+	if(s[size-1] == ':'){
+		
+		for(int i=0; i<size-1; i++){
+			if(ispunct(s[i])){
+				//Label not valid
+				return false;
+			}
+		}
 		return true;
+	}
 
 	return false;
 }
 
 /*Start an adress on the 000 left position*/
-void startAdress(address *a){
+void startAddress(address *a){
 	a->ad = 0;
 	a->left = true;
 }
@@ -181,7 +190,7 @@ void getLabels(FILE *source, Head *labels){
 	string word;
 	address place;
 
-	startAdress(&place);
+	startAddress(&place);
 
 	while(fscanf(source, " %s", word) != EOF){
 

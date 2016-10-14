@@ -6,17 +6,12 @@
 #ifndef _memorymap
 #define _memorymap
 
-#include "text.h"
+#include "reader.h"
 
-typedef struct Memorymap{
-
-	string ad;
-	string OP1;
-	string p1;
-	string OP2;
-	string p2;
-
-	struct Memorymap *next;
-}Memorymap, memorymap;
+void createMemorymap(FILE *source, Head labels, string *map);
+void updateAddress(string s, address *ad, FILE *source);
+void writeMap(string op, string add, address ad, Head labels, string *map, int *printLine);
+bool checkDirective(string s);
+void convertToStringSize3(string s, Head labels);
 
 #endif

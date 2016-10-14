@@ -1,5 +1,6 @@
 label:
 label2:
+LD 1234
 
 chugar: .org 123
 
@@ -15,8 +16,14 @@ glamour:
 .set AMOR 0x000000001a
 .word 23
 .word 32
+.org 10
 novolabel:
-ADD 23
+LD- "23"
+LD "12"
+LD "19"
+LD "10"
 novolabel2:
 
 .org 0x0000000000
+
+label:errado:
