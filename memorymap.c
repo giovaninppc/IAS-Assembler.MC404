@@ -107,7 +107,34 @@ void createMemorymap(FILE *source, Head labels, string *map){
 				writeMap("21", st, ad, labels, map, &printLine);
 			}
 			else if(strcmp(word, "STaddr") == 0){
-				
+				string st;
+				fscanf(source, " %s", st);
+
+				//Removing "", if possible
+				if(removeAspas(st) == false){
+					//ERROR
+					addERROR("Not a valid reference to STaddr+, missing \"", st);
+				}
+
+				//Checking if the reference is an address 
+				//(Need to verify left or right)
+				Node a = findStringList(labels, st);
+				int left;
+				if(a != NULL){
+					left = a->left;
+				}
+			
+				//Jump left
+				if(checkIfNumber(st) == true || checkIfHex(st) 
+					|| (a != NULL && left == true)){
+					convertToStringSize3(st, labels);
+					writeMap("12", st, ad, labels, map, &printLine);
+				}
+				//Jump right
+				else if(a != NULL && left == false){
+					convertToStringSize3(st, labels);
+					writeMap("13", st, ad, labels, map, &printLine);
+				}
 			}
 
 			//MATHs
@@ -187,17 +214,16 @@ void createMemorymap(FILE *source, Head labels, string *map){
 					left = a->left;
 				}
 			
-				//Jump left - always
-				if(checkIfNumber(jmp) == true || (a != NULL && left == true)){
+				//Jump right
+				if(a != NULL && left == false){
 					convertToStringSize3(jmp, labels);
-					writeMap("0C", jmp, ad, labels, map, &printLine);
+					writeMap("0E", jmp, ad, labels, map, &printLine);
 				}
-				else if(a != NULL && left == false){
+				//Jump left - always
+				else if(checkIfNumber(jmp) || checkIfHex(jmp) || (a!=NULL && left==true)){
 					convertToStringSize3(jmp, labels);
 					writeMap("0D", jmp, ad, labels, map, &printLine);
 				}
-
-
 			}
 			else if(strcmp(word, "JUMP+") == 0){
 				string jmp;
@@ -269,8 +295,8 @@ void createMemorymap(FILE *source, Head labels, string *map){
 			}
 		}
 
-		else if(checkIfNumber(word) == false && checkIfHex(word) == false 
-			&& findStringList(word) == NULL){
+		else if(checkIfNumber(word)==false && checkIfHex(word)==false && 
+			findStringList(labels,word)==NULL){
 			//ERROR
 			string e = "Invalid Command ";
 			strcat(e, word);
