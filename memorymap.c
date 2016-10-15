@@ -25,10 +25,15 @@ void createMemorymap(FILE *source, Head labels, string *map){
 		
 		fscanf(source, "%c", &kill);
 
+		removeDots(word);
 		/*Passing Comment*/
 		if(word[0] == '#'){
 			finishLine(source);
 			line++;
+			continue;
+		}
+
+		else if(findStringList(labels, word) != NULL){
 			continue;
 		}
 
@@ -38,30 +43,50 @@ void createMemorymap(FILE *source, Head labels, string *map){
 			if(strcmp(word, "LD") == 0){
 				string ld;
 				fscanf(source, " %s", ld);
+				if(removeAspas(ld) == false){
+					//ERROR
+					addERROR("Not a valid reference to LD, missing \"", ld);
+				}
 				convertToStringSize3(ld, labels);
 				writeMap("01", ld, ad, labels, map, &printLine);
 			}
 			else if(strcmp(word, "LD-") == 0){
 				string ld;
 				fscanf(source, " %s", ld);
+				if(removeAspas(ld) == false){
+					//ERROR
+					addERROR("Not a valid reference to LD-, missing \"", ld);
+				}
 				convertToStringSize3(ld, labels);
 				writeMap("02", ld, ad, labels, map, &printLine);
 			}
 			else if(strcmp(word, "LD|") == 0){
 				string ld;
 				fscanf(source, " %s", ld);
+				if(removeAspas(ld) == false){
+					//ERROR
+					addERROR("Not a valid reference to LD|, missing \"", ld);
+				}
 				convertToStringSize3(ld, labels);
 				writeMap("03", ld, ad, labels, map, &printLine);
 			}
 			else if(strcmp(word, "LDmq") == 0){
 				string ld;
 				fscanf(source, " %s", ld);
+				if(removeAspas(ld) == false){
+					//ERROR
+					addERROR("Not a valid reference to LDmq, missing \"", ld);
+				}
 				convertToStringSize3(ld, labels);
 				writeMap("0a", ld, ad, labels, map, &printLine);
 			}
 			else if(strcmp(word, "LDmq_mx") == 0){
 				string ld;
 				fscanf(source, " %s", ld);
+				if(removeAspas(ld) == false){
+					//ERROR
+					addERROR("Not a valid reference to LDmq_mx, missing \"", ld);
+				}
 				convertToStringSize3(ld, labels);
 				writeMap("09", ld, ad, labels, map, &printLine);
 			}
@@ -89,6 +114,10 @@ void createMemorymap(FILE *source, Head labels, string *map){
 			else if(strcmp(word, "ADD") == 0){
 				string ld;
 				fscanf(source, " %s", ld);
+				if(removeAspas(ld) == false){
+					//ERROR
+					addERROR("Not a valid reference to ADD, missing \"", ld);
+				}
 				convertToStringSize3(ld, labels);
 				writeMap("05", ld, ad, labels, map, &printLine);
 			}
@@ -101,38 +130,103 @@ void createMemorymap(FILE *source, Head labels, string *map){
 			else if(strcmp(word, "ADD|") == 0){
 				string ld;
 				fscanf(source, " %s", ld);
+				if(removeAspas(ld) == false){
+					//ERROR
+					addERROR("Not a valid reference to ADD|, missing \"", ld);
+				}
 				convertToStringSize3(ld, labels);
 				writeMap("07", ld, ad, labels, map, &printLine);
 			}
 			else if(strcmp(word, "SUB|") == 0){
 				string ld;
 				fscanf(source, " %s", ld);
+				if(removeAspas(ld) == false){
+					//ERROR
+					addERROR("Not a valid reference to SUB|, missing \"", ld);
+				}
 				convertToStringSize3(ld, labels);
 				writeMap("08", ld, ad, labels, map, &printLine);
 			}
 			else if(strcmp(word, "DIV") == 0){
 				string ld;
 				fscanf(source, " %s", ld);
+				if(removeAspas(ld) == false){
+					//ERROR
+					addERROR("Not a valid reference to DIV, missing \"", ld);
+				}
 				convertToStringSize3(ld, labels);
 				writeMap("0C", ld, ad, labels, map, &printLine);
 			}
 			else if(strcmp(word, "MUL") == 0){
 				string ld;
 				fscanf(source, " %s", ld);
+				if(removeAspas(ld) == false){
+					//ERROR
+					addERROR("Not a valid reference to MUL, missing \"", ld);
+				}
 				convertToStringSize3(ld, labels);
 				writeMap("0B", ld, ad, labels, map, &printLine);
 			}
 
 			//JUMPs
 			else if(strcmp(word, "JMP") == 0){
+				string jmp;
+				fscanf(source, " %s", jmp);
+
+				//Removing "", if possible
+				if(removeAspas(jmp) == false){
+					//ERROR
+					addERROR("Not a valid reference to Jump, missing \"", jmp);
+				}
+
+				//Checking if the reference is an address 
+				//(Need to verify left or right)
+				Node a = findStringList(labels, jmp);
+				int left;
+				if(a != NULL){
+					left = a->left;
+				}
+			
+				//Jump left - always
+				if(checkIfNumber(jmp) == true || (a != NULL && left == true)){
+					convertToStringSize3(jmp, labels);
+					writeMap("0C", jmp, ad, labels, map, &printLine);
+				}
+				else if(a != NULL && left == false){
+					convertToStringSize3(jmp, labels);
+					writeMap("0D", jmp, ad, labels, map, &printLine);
+				}
+
+
 			}
 			else if(strcmp(word, "JUMP+") == 0){
-			}
+				string jmp;
+				fscanf(source, " %s", jmp);
 
-			else{
-				//ERROR
-				addERROR("Invalid Command!", word);
-			}
+				//Removing "", if possible
+				if(removeAspas(jmp) == false){
+					//ERROR
+					addERROR("Not a valid reference to Jump+, missing \"", jmp);
+				}
+
+				//Checking if the reference is an address 
+				//(Need to verify left or right)
+				Node a = findStringList(labels, jmp);
+				int left;
+				if(a != NULL){
+					left = a->left;
+				}
+			
+				//Jump left - always
+				if(checkIfNumber(jmp) == true || (a != NULL && left == true)){
+					convertToStringSize3(jmp, labels);
+					writeMap("0F", jmp, ad, labels, map, &printLine);
+				}
+				else if(a != NULL && left == false){
+					convertToStringSize3(jmp, labels);
+					writeMap("10", jmp, ad, labels, map, &printLine);
+				}
+			}	
 		}
 
 		else if(checkDirective(word)){
@@ -172,9 +266,12 @@ void createMemorymap(FILE *source, Head labels, string *map){
 			}
 		}
 
-		else{
+		else if(checkIfNumber(word) == false){
 			//ERROR
-			addERROR("Invalid Command!", word);
+			string e = "Invalid Command ";
+			strcat(e, word);
+			addERROR(e, word);
+			return;
 		}
 
 		updateAddress(word, &ad, source);
@@ -196,12 +293,7 @@ void convertToStringSize10(string s, Head labels){
 	int size = strlen(s);
 
 	//Removing ""
-	if(s[0] == '\"'){
-		for(int i=0; i<size-2; i++){
-			s[i] = s[i+1];
-		}
-		s[size-2] = '\0';
-	}
+	removeAspas(s);
 
 	Node n = findStringList(labels, s);
 	//Encontramos um label!
@@ -254,10 +346,7 @@ void convertToStringSize3(string s, Head labels){
 	int size = strlen(s);
 
 	//Removing ""
-	for(int i=0; i<size-2; i++){
-		s[i] = s[i+1];
-	}
-	s[size-2] = '\0';
+	removeAspas(s);
 
 	Node n = findStringList(labels, s);
 	//Encontramos um label!
@@ -373,6 +462,22 @@ bool checkIfNumber(string s){
 	for(int i=0; i<size; i++){
 		if(!(s[i] >= '0' && s[i] <= '9'))
 			return false;
+	}
+	return true;
+}
+
+/*Try to remove the " character, return false if not possible */
+bool removeAspas(string s){
+
+	int size = strlen(s);
+	if(s[0] == '\"'){
+		for(int i=0; i<size-2; i++){
+			s[i] = s[i+1];
+		}
+		s[size-2] = '\0';
+	}
+	else{
+		return false;
 	}
 	return true;
 }

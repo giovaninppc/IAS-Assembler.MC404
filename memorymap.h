@@ -16,5 +16,6 @@ bool checkDirective(string s);
 void convertToStringSize3(string s, Head labels);
 void convertToStringSize10(string s, Head labels);
 bool checkIfNumber(string s);
+bool removeAspas(string s);
 
 #endif
