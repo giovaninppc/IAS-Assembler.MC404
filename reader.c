@@ -146,7 +146,7 @@ int convertNumber(string s){
 						break;
 					default:
 						//ERROR
-						addERROR("Invalid number reference", 0);
+						addERROR("Invalid number reference", s);
 						break;
 				}
 			}
@@ -181,6 +181,10 @@ void addSet(FILE *source, Head *labels){
 	string set, number;
 	fscanf(source, " %s", set);
 	fscanf(source, " %s", number);
+	if(checkIfNumber(number) == false){
+		//ERROR -- Arrumar para hexadecimais
+		addERROR("Wrong parameters on .set directive", number);
+	}
 	Address a;
 	a.ad = convertNumber(number);
 	a.left = -1;
@@ -218,7 +222,7 @@ void getLabels(FILE *source, Head *labels){
 			//Checking if its the only label on this line
 			if(lineLabel == true){
 				//ERROR
-				addERROR("More than 1 label on the line", line);
+				addERROR("More than 1 label on the line", word);
 				return;
 			}
 

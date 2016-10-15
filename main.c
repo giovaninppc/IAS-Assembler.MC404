@@ -66,7 +66,7 @@ int main(int argc, char *argv[]){
 	}
 
 	/*Printing Answer*/
-	out(map, writeMode, output);
+	out(map, writeMode, output, source);
 
 	/*Freeing alocatted memory and closing files*/
 	deleteList(labels);

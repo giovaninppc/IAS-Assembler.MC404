@@ -128,6 +128,11 @@ void createMemorymap(FILE *source, Head labels, string *map){
 			}
 			else if(strcmp(word, "JUMP+") == 0){
 			}
+
+			else{
+				//ERROR
+				addERROR("Invalid Command!", word);
+			}
 		}
 
 		else if(checkDirective(word)){
@@ -136,7 +141,8 @@ void createMemorymap(FILE *source, Head labels, string *map){
 				
 				if(ad.left == false){
 					//ERROR
-					addERROR("Trying to add a word on the right side of memory map", line);
+					addERROR("Trying to add a word on the right side of memory map", word);
+					return;
 				}
 				else{
 					string w;
@@ -149,7 +155,8 @@ void createMemorymap(FILE *source, Head labels, string *map){
 			if(strcmp(word, ".wfill") == 0){
 				if(ad.left == false){
 					//ERROR
-					addERROR("Trying to add a word on the right side of memory map", line);
+					addERROR("Trying to add a word vector on the right side of memory map", word);
+					return;
 				}
 				else{
 					string w;
@@ -163,6 +170,11 @@ void createMemorymap(FILE *source, Head labels, string *map){
 					}
 				}
 			}
+		}
+
+		else{
+			//ERROR
+			addERROR("Invalid Command!", word);
 		}
 
 		updateAddress(word, &ad, source);
@@ -208,7 +220,7 @@ void convertToStringSize10(string s, Head labels){
 	}
 
 	else if(checkIfNumber(s) == false && n == NULL){
-		addERROR("Rotulo invalido", 1);
+		addERROR("Invalid Label", s);
 	}
 
 	int quotient = convertNumber(s);
@@ -265,7 +277,7 @@ void convertToStringSize3(string s, Head labels){
 	}
 
 	else if(checkIfNumber(s) == false && n == NULL){
-		addERROR("Rotulo invalido", 1);
+		addERROR("Rotulo invalido", s);
 	}
 
 	int quotient = convertNumber(s);
