@@ -40,7 +40,7 @@ int main(int argc, char *argv[]){
 	strcpy(nameFile, argv[1]);
 	source = fopen(nameFile, "r");
 	if(source == NULL){
-		printf("houve um erro na abertura do arquivo\n");
+		printf("houve um erro na abertura do arquivo de entrada\n");
 		return 1;
 	}
 
@@ -51,7 +51,7 @@ int main(int argc, char *argv[]){
 		output = fopen(outputFile, "w");
 		
 		if(outputFile == NULL){
-			printf("houve um erro na abertura do arquivo\n");
+			printf("houve um erro na abertura do arquivo de saída\n");
 			return 1;
 		}
 	}
@@ -61,7 +61,9 @@ int main(int argc, char *argv[]){
 	rewind(source);
 
 	/*reating Memory Map*/
-	createMemorymap(source, labels, map);
+	if(getERRORvalue() == false){
+		createMemorymap(source, labels, map);
+	}
 
 	/*Printing Answer*/
 	out(map, writeMode, output);

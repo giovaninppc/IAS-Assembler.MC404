@@ -3,9 +3,10 @@
  *by reading it on the FILE and saving on the proper structure*/
 
 #include "memorymap.h"
- #include "reader.h"
+#include "reader.h"
 #include "text.h"
 #include "list.h"
+#include "exit.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -14,20 +15,15 @@
 void createMemorymap(FILE *source, Head labels, string *map){
 
 	string word;
-	//string place = "000 ", op;
 	int printLine = 0;
 	address ad;
-	int line = 0;
+	int line = 1;
 	char kill;
 	startAddress(&ad);
 
 	while(fscanf(source, " %s", word) != EOF){
 		
 		fscanf(source, "%c", &kill);
-		//printf("debugging :%c\n", kill);
-		if(kill == '\n'){
-			line++;
-		}
 
 		/*Passing Comment*/
 		if(word[0] == '#'){
@@ -140,7 +136,7 @@ void createMemorymap(FILE *source, Head labels, string *map){
 				
 				if(ad.left == false){
 					//ERROR
-					printf("ERROR AKI\n\n");
+					addERROR("Trying to add a word on the right side of memory map", line);
 				}
 				else{
 					string w;
@@ -153,7 +149,7 @@ void createMemorymap(FILE *source, Head labels, string *map){
 			if(strcmp(word, ".wfill") == 0){
 				if(ad.left == false){
 					//ERROR
-					printf("ERROR AKI\n\n");
+					addERROR("Trying to add a word on the right side of memory map", line);
 				}
 				else{
 					string w;
@@ -174,6 +170,11 @@ void createMemorymap(FILE *source, Head labels, string *map){
 
 	if(ad.left == false){
 		writeMap("00", "000", ad, labels, map, &printLine);
+	}
+
+	//Add 1 to the line counter
+	if(kill == '\n'){
+			line++;
 	}
 
 }
@@ -199,11 +200,15 @@ void convertToStringSize10(string s, Head labels){
 
 	//Hexadecimal
 	size = strlen(s);
-	if(s[0] == '0' && s[0] == 'x'){
+	if(s[0] == '0' && s[1] == 'x'){
 		for(int i=0; i<size-1; i++){
 			s[i] = s[i+2];
 		}
 		return;
+	}
+
+	else if(checkIfNumber(s) == false && n == NULL){
+		addERROR("Rotulo invalido", 1);
 	}
 
 	int quotient = convertNumber(s);
@@ -250,13 +255,17 @@ void convertToStringSize3(string s, Head labels){
 	}
 
 	//Hexadecimal
-	if(s[0] == '0' && s[0] == 'x'){
+	if(s[0] == '0' && s[1] == 'x'){
 		size = strlen(s);
 		s[0] = s[size-3];
 		s[1] = s[size-2];
 		s[2] = s[size-1];
 		s[3] = 0;
 		return;
+	}
+
+	else if(checkIfNumber(s) == false && n == NULL){
+		addERROR("Rotulo invalido", 1);
 	}
 
 	int quotient = convertNumber(s);
@@ -341,6 +350,17 @@ bool checkDirective(string s){
 
 	if(s[0] != '.'){
 		return false;
+	}
+	return true;
+}
+
+/*Check if a given string is made only of number characters*/
+bool checkIfNumber(string s){
+	int size = strlen(s);
+
+	for(int i=0; i<size; i++){
+		if(!(s[i] >= '0' && s[i] <= '9'))
+			return false;
 	}
 	return true;
 }

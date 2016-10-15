@@ -6,6 +6,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
+#include "exit.h"
 
 void finishLine (FILE *source){
 
@@ -145,6 +146,7 @@ int convertNumber(string s){
 						break;
 					default:
 						//ERROR
+						addERROR("Invalid number reference", 0);
 						break;
 				}
 			}
@@ -190,30 +192,49 @@ void getLabels(FILE *source, Head *labels){
 	
 	string word;
 	address place;
+	char kill;
+	int line = 1;
+	bool lineLabel = false;
 
 	startAddress(&place);
 
 	while(fscanf(source, " %s", word) != EOF){
 
-			/*Passing Comment*/
-			if(word[0] == '#'){
-				finishLine(source);
-				continue;
-			}
-			// dbbg printf("%s %d\n", word, (int)strlen(word));
+		//Getting the last caracter, if its a line breaker, add 1 line		
+		fscanf(source, "%c", &kill);
+		
+		/*Passing Comment*/
+		if(word[0] == '#'){
+			finishLine(source);
+			continue;
+		}
 
-			//Change the addres depending on the command
-			changeAddress(word, &place, source);
+		//Change the addres depending on the command
+		changeAddress(word, &place, source);
 
-			//Verify if the word given is actually a label
-			if(checkLabel(word)){
-				removeDots(word);
-				insertList(labels, word, place);
+		//Verify if the word given is actually a label
+		if(checkLabel(word)){
+
+			//Checking if its the only label on this line
+			if(lineLabel == true){
+				//ERROR
+				addERROR("More than 1 label on the line", line);
+				return;
 			}
 
-			if(strcmp(word, ".set") == 0){
-				addSet(source, labels);
-			}
+			lineLabel = true;
+			removeDots(word);
+			insertList(labels, word, place);
+		}
+
+		if(strcmp(word, ".set") == 0){
+			addSet(source, labels);
+		}
+
+		if(kill == '\n'){
+			line++;
+			lineLabel = false;
+		}
 	}
 }
 

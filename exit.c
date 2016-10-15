@@ -7,12 +7,27 @@
 #include "text.h"
 #include "exit.h"
 
+bool ERROR = false;
+int lineERROR = 0;
+string ERRORmessage;
+
 /*Function out: print the answer
  (Memory map or ERROR message)
  on the correct output:
  writeMode == true => archive
  writeMode == false => stdout*/
 void out(string *map, int writeMode, FILE *output){
+
+	//If an ERROR has ocourred, it doesnt print the memory map
+	if(ERROR == true){
+		if(writeMode == false){
+			printf("ERROR on line %d\n%s\n", lineERROR, ERRORmessage);
+		}
+		else if(writeMode == true){
+			fprintf(output, "ERROR on line %d\n%s\n", lineERROR, ERRORmessage);
+		}
+		return;
+	}
 
 	//Printing on stdout
 	if(writeMode == false){
@@ -27,4 +42,19 @@ void out(string *map, int writeMode, FILE *output){
 			fprintf(output, "%s\n", map[i]);
 		}
 	}
+}
+
+/*Function called when an ERROR occours
+ it recieves the ERROR string as a parameter
+ and the line correspondent to the error*/
+void addERROR(string message, int line){
+	
+	strcpy(ERRORmessage, message);
+	ERROR = true;
+
+}
+
+/*Returns the value of ERROR*/
+bool getERRORvalue(){
+	return ERROR;
 }
