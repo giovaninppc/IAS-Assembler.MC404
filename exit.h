@@ -1,4 +1,5 @@
-/**/
+/*Giovani Nascimento Pereira - 168609
+ Modulo .h de exit, contem funcoes para saida do montador e impressao de erros*/
 
 #ifndef _exit
 #define _exit

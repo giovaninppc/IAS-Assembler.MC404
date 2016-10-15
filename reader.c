@@ -197,7 +197,7 @@ void getLabels(FILE *source, Head *labels){
 	
 	string word;
 	address place;
-	char kill;
+	char kill = '\n';
 	int line = 1;
 	bool lineLabel = false;
 
