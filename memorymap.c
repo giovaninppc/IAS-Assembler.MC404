@@ -241,6 +241,7 @@ void createMemorymap(FILE *source, Head labels, string *map){
 				else{
 					string w;
 					fscanf(source, " %s", w);
+					removeDots(w);
 					convertToStringSize10(w, labels);
 					writeWordOnMap(w, ad, map, &printLine, labels);
 					ad.ad = ad.ad +1;
@@ -249,7 +250,8 @@ void createMemorymap(FILE *source, Head labels, string *map){
 			if(strcmp(word, ".wfill") == 0){
 				if(ad.left == false){
 					//ERROR
-					addERROR("Trying to add a word vector on the right side of memory map", word);
+					addERROR("Trying to add a word vector on the right side of memory map", 
+						word);
 					return;
 				}
 				else{
@@ -257,6 +259,7 @@ void createMemorymap(FILE *source, Head labels, string *map){
 					int v;
 					fscanf(source, "%d", &v);
 					fscanf(source, " %s", w);
+					removeDots(w);
 					convertToStringSize10(w, labels);
 					for(int i=0; i<v; i++){
 						writeWordOnMap(w, ad, map, &printLine, labels);
@@ -266,7 +269,8 @@ void createMemorymap(FILE *source, Head labels, string *map){
 			}
 		}
 
-		else if(checkIfNumber(word) == false){
+		else if(checkIfNumber(word) == false && checkIfHex(word) == false 
+			&& findStringList(word) == NULL){
 			//ERROR
 			string e = "Invalid Command ";
 			strcat(e, word);
@@ -305,14 +309,19 @@ void convertToStringSize10(string s, Head labels){
 	//Hexadecimal
 	size = strlen(s);
 	if(s[0] == '0' && s[1] == 'x'){
+		if(checkIfHex(s) == false){
+			addERROR("Invalid Hexadecimal Number", s);
+			return;
+		}
 		for(int i=0; i<size-1; i++){
 			s[i] = s[i+2];
 		}
 		return;
 	}
 
-	else if(checkIfNumber(s) == false && n == NULL){
+	else if(checkIfNumber(s) == false && n == NULL && checkIfHex(s) == false){
 		addERROR("Invalid Label", s);
+		return;
 	}
 
 	int quotient = convertNumber(s);
@@ -466,6 +475,21 @@ bool checkIfNumber(string s){
 	return true;
 }
 
+/*Check if a given string is a valid Hexadecimal number*/
+bool checkIfHex(string s){
+
+	int size = strlen(s);
+	if(size != 12 || !(s[0] == '0' && s[1] == 'x')){
+		return false;
+	}
+
+	for(int i=2; i<size; i++){
+		if(!(s[i] >= '0' && s[i] <= '9') && !(s[i] >= 'A' && s[i] <= 'F'))
+			return false;
+	}
+	return true;
+}
+
 /*Try to remove the " character, return false if not possible */
 bool removeAspas(string s){
 
@@ -482,6 +506,7 @@ bool removeAspas(string s){
 	return true;
 }
 
+/*Update the address given by parameter (ad) depending on the command s*/
 void updateAddress(string s, address *ad, FILE *source){
 
 	//Checking for directives wich may change the position

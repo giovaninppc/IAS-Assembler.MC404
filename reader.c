@@ -67,6 +67,7 @@ void changeAddress(string s, address *ad, FILE *source){
 			fscanf(source, " %s", wfillSize);
 			//printf("%s %d\n", wfillSize, (int)strlen(wfillSize));
 			(*ad).ad = ad->ad + convertNumber(wfillSize);
+			fscanf(source, " %s", wfillSize); //read the value after the wfillSize
 			return;
 		}
 		else if (strcmp(s, ".allign") == 0){
@@ -181,7 +182,7 @@ void addSet(FILE *source, Head *labels){
 	string set, number;
 	fscanf(source, " %s", set);
 	fscanf(source, " %s", number);
-	if(checkIfNumber(number) == false){
+	if(checkIfNumber(number) == false && checkIfHex(number) == false){
 		//ERROR -- Arrumar para hexadecimais
 		addERROR("Wrong parameters on .set directive", number);
 	}

@@ -15,6 +15,7 @@ void writeWordOnMap(string word, address ad, string *map, int *printLine, Head l
 bool checkDirective(string s);
 void convertToStringSize3(string s, Head labels);
 void convertToStringSize10(string s, Head labels);
+bool checkIfHex(string s);
 bool checkIfNumber(string s);
 bool removeAspas(string s);
 
