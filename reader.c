@@ -157,8 +157,15 @@ int convertNumber(string s){
 
 	//if decimal number
 	int exit = 0;
-	for(int i=position-1, x=1; i>=0; i--, x*=10){
+	int k = 0;
+	if(s[0] == '-'){
+		k++;
+	}
+	for(int i=position-1, x=1; i>=k; i--, x*=10){
 		exit += (int) x * (s[i] - '0');
+	}
+	if(k){
+		return -1*exit;
 	}
 	return exit;
 }

@@ -18,5 +18,6 @@ void convertToStringSize10(string s, Head labels);
 bool checkIfHex(string s);
 bool checkIfNumber(string s);
 bool removeAspas(string s);
+void convertToNegativeHex(string s);
 
 #endif

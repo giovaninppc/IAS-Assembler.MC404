@@ -353,6 +353,12 @@ void convertToStringSize10(string s, Head labels){
 	int quotient = convertNumber(s);
 	string hexadecimalNumber;
 	int i = 0;
+	int negative = false;
+
+	if(quotient < 0){
+		negative = true;
+		quotient *= -1;
+	}
 
     while(quotient!=0){
         int temp = quotient % 16;
@@ -367,6 +373,17 @@ void convertToStringSize10(string s, Head labels){
 	    quotient = quotient / 16;
     }
     hexadecimalNumber[i] = 0;
+
+    if(negative == true){
+    	//Convert to the real negative
+    	convertToNegativeHex(hexadecimalNumber);
+    	strcpy(s, "FFFFFFFFFF");
+    	size = strlen(hexadecimalNumber);
+    	for(i = 0; i< size; i++){
+			s[9-i] = hexadecimalNumber[i];
+		}
+		return;
+    }
 
 	//decimal
 	strcpy(s, "0000000000");
@@ -392,6 +409,10 @@ void convertToStringSize3(string s, Head labels){
 
 	//Hexadecimal
 	if(s[0] == '0' && s[1] == 'x'){
+		if(checkIfHex(s) == false){
+			addERROR("Invalid Hexadecimal Number", s);
+			return;
+		}
 		size = strlen(s);
 		s[0] = s[size-3];
 		s[1] = s[size-2];
@@ -401,13 +422,20 @@ void convertToStringSize3(string s, Head labels){
 	}
 
 	else if(checkIfNumber(s) == false && n == NULL){
-		addERROR("Rotulo invalido", s);
+		addERROR("Invalid Label", s);
 	}
 
 	int quotient = convertNumber(s);
 	string hexadecimalNumber;
 	int i = 0;
+	int negative = false;
 
+	if(quotient < 0){
+		negative = true;
+		quotient *= -1;
+	}
+
+	//Condition if the decimal number is negative
     while(quotient!=0){
         int temp = quotient % 16;
 
@@ -422,6 +450,17 @@ void convertToStringSize3(string s, Head labels){
     }
     hexadecimalNumber[i] = 0;
 
+    if(negative == true){
+    	//Convert to the real negative
+    	convertToNegativeHex(hexadecimalNumber);
+    	strcpy(s, "FFF");
+    	size = strlen(hexadecimalNumber);
+    	for(i = 0; i< size; i++){
+			s[2-i] = hexadecimalNumber[i];
+		}
+		return;
+    }
+
 	//decimal
 	strcpy(s, "000");
 	size = strlen(hexadecimalNumber);
@@ -430,6 +469,86 @@ void convertToStringSize3(string s, Head labels){
 	}
 }
 
+/*Convert a hexadecimal string given as parameter to its negative*/
+void convertToNegativeHex(string s){
+	int size = strlen(s);
+
+	for(int i=0; i<size/2; i++){
+		char a = s[i];
+		s[i] = s[size -1 -i];
+		s[size -1 -i] = a;
+	}
+
+	//Inverting all chars
+	for(int i=0; i<size; i++){
+		switch (s[i]){
+			case '0':
+				s[i] = 'F';
+				break;
+			case '1':
+				s[i] = 'E';
+				break;
+			case '2':
+				s[i] = 'D';
+				break;
+			case '3':
+				s[i] = 'C';
+				break;
+			case '4':
+				s[i] = 'B';
+				break;
+			case '5':
+				s[i] = 'A';
+				break;
+			case '6':
+				s[i] = '9';
+				break;
+			case '7':
+				s[i] = '8';
+				break;
+			case '8':
+				s[i] = '7';
+				break;
+			case '9':
+				s[i] = '6';
+				break;
+			case 'A':
+				s[i] = '5';
+				break;
+			case 'B':
+				s[i] = '4';
+				break;
+			case 'C':
+				s[i] = '3';
+				break;
+			case 'D':
+				s[i] = '2';
+				break;
+			case 'E':
+				s[i] = '1';
+				break;
+			case 'F':
+			s[i] = '0';
+				break;
+		}
+	}
+	//Ading 1
+	s[size-1]++;
+	int i = size-1;
+	if(s[i] > 'F'){
+		s[i] = '0';
+		i--;
+		s[i]++;
+	}
+
+	for(int i=0; i<size/2; i++){
+		char a = s[i];
+		s[i] = s[size -1 -i];
+		s[size -1 -i] = a;
+	}
+}
+
+/*Write an instruction on the memory map according to the parameters passed by reference*/
 void writeMap(string op, string add, address ad, Head labels, string *map, int *printLine){
 
 	if(ad.left == true){
@@ -460,6 +579,7 @@ void writeMap(string op, string add, address ad, Head labels, string *map, int *
 
 }
 
+/*Write a word on the memory map according to the parameters passed by reference*/
 void writeWordOnMap(string word, address ad, string *map, int *printLine, Head labels){
 
 	//Adding right position on the map
@@ -495,7 +615,12 @@ bool checkIfNumber(string s){
 	int size = strlen(s);
 
 	for(int i=0; i<size; i++){
-		if(!(s[i] >= '0' && s[i] <= '9'))
+		if(i == 0){
+			if(!((s[i] >= '0' && s[i] <= '9')||s[i] == '-' )){
+				return false;
+			}
+		}
+		else if(!(s[i] >= '0' && s[i] <= '9'))
 			return false;
 	}
 	return true;
