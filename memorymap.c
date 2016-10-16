@@ -13,7 +13,7 @@
 
 /*Generates a Memory bap based on a source code and all the sets and labels stored
 on the labels list - passed by parameters*/
-void createMemorymap(FILE *source, Head labels, string *map){
+void createMemorymap(FILE *source, Head *labels, string *map){
 
 	string word;
 	int printLine = 0;
@@ -35,7 +35,7 @@ void createMemorymap(FILE *source, Head labels, string *map){
 			continue;
 		}
 
-		else if(findStringList(labels, word) != NULL){
+		else if(findStringList(*labels, word) != NULL){
 			continue;
 		}
 
@@ -49,8 +49,8 @@ void createMemorymap(FILE *source, Head labels, string *map){
 					//ERROR
 					addERROR("Not a valid reference to LD, missing \"", ld);
 				}
-				convertToStringSize3(ld, labels);
-				writeMap("01", ld, ad, labels, map, &printLine);
+				convertToStringSize3(ld, *labels);
+				writeMap("01", ld, ad, *labels, map, &printLine);
 			}
 			else if(strcmp(word, "LD-") == 0){
 				string ld;
@@ -59,8 +59,8 @@ void createMemorymap(FILE *source, Head labels, string *map){
 					//ERROR
 					addERROR("Not a valid reference to LD-, missing \"", ld);
 				}
-				convertToStringSize3(ld, labels);
-				writeMap("02", ld, ad, labels, map, &printLine);
+				convertToStringSize3(ld, *labels);
+				writeMap("02", ld, ad, *labels, map, &printLine);
 			}
 			else if(strcmp(word, "LD|") == 0){
 				string ld;
@@ -69,8 +69,8 @@ void createMemorymap(FILE *source, Head labels, string *map){
 					//ERROR
 					addERROR("Not a valid reference to LD|, missing \"", ld);
 				}
-				convertToStringSize3(ld, labels);
-				writeMap("03", ld, ad, labels, map, &printLine);
+				convertToStringSize3(ld, *labels);
+				writeMap("03", ld, ad, *labels, map, &printLine);
 			}
 			else if(strcmp(word, "LDmq") == 0){
 				string ld;
@@ -79,8 +79,8 @@ void createMemorymap(FILE *source, Head labels, string *map){
 					//ERROR
 					addERROR("Not a valid reference to LDmq, missing \"", ld);
 				}
-				convertToStringSize3(ld, labels);
-				writeMap("0a", ld, ad, labels, map, &printLine);
+				convertToStringSize3(ld, *labels);
+				writeMap("0a", ld, ad, *labels, map, &printLine);
 			}
 			else if(strcmp(word, "LDmq_mx") == 0){
 				string ld;
@@ -89,24 +89,24 @@ void createMemorymap(FILE *source, Head labels, string *map){
 					//ERROR
 					addERROR("Not a valid reference to LDmq_mx, missing \"", ld);
 				}
-				convertToStringSize3(ld, labels);
-				writeMap("09", ld, ad, labels, map, &printLine);
+				convertToStringSize3(ld, *labels);
+				writeMap("09", ld, ad, *labels, map, &printLine);
 			}
 
 			//Position Changes
 			else if(strcmp(word, "LSH") == 0){
-				writeMap("14", "000", ad, labels, map, &printLine);
+				writeMap("14", "000", ad, *labels, map, &printLine);
 			}
 			else if(strcmp(word, "RSH") == 0){
-				writeMap("15", "000", ad, labels, map, &printLine);
+				writeMap("15", "000", ad, *labels, map, &printLine);
 			}
 
 			//STOREs
 			else if(strcmp(word, "ST") == 0){
 				string st;
 				fscanf(source, " %s", st);
-				convertToStringSize3(st, labels);
-				writeMap("21", st, ad, labels, map, &printLine);
+				convertToStringSize3(st, *labels);
+				writeMap("21", st, ad, *labels, map, &printLine);
 			}
 			else if(strcmp(word, "STaddr") == 0){
 				string st;
@@ -120,7 +120,7 @@ void createMemorymap(FILE *source, Head labels, string *map){
 
 				//Checking if the reference is an address 
 				//(Need to verify left or right)
-				Node a = findStringList(labels, st);
+				Node a = findStringList(*labels, st);
 				int left;
 				if(a != NULL){
 					left = a->left;
@@ -129,13 +129,13 @@ void createMemorymap(FILE *source, Head labels, string *map){
 				//Jump left
 				if(checkIfNumber(st) == true || checkIfHex(st) 
 					|| (a != NULL && left == true)){
-					convertToStringSize3(st, labels);
-					writeMap("12", st, ad, labels, map, &printLine);
+					convertToStringSize3(st, *labels);
+					writeMap("12", st, ad, *labels, map, &printLine);
 				}
 				//Jump right
 				else if(a != NULL && left == false){
-					convertToStringSize3(st, labels);
-					writeMap("13", st, ad, labels, map, &printLine);
+					convertToStringSize3(st, *labels);
+					writeMap("13", st, ad, *labels, map, &printLine);
 				}
 			}
 
@@ -147,14 +147,14 @@ void createMemorymap(FILE *source, Head labels, string *map){
 					//ERROR
 					addERROR("Not a valid reference to ADD, missing \"", ld);
 				}
-				convertToStringSize3(ld, labels);
-				writeMap("05", ld, ad, labels, map, &printLine);
+				convertToStringSize3(ld, *labels);
+				writeMap("05", ld, ad, *labels, map, &printLine);
 			}
 			else if(strcmp(word, "SUB") == 0){
 				string ld;
 				fscanf(source, " %s", ld);
-				convertToStringSize3(ld, labels);
-				writeMap("06", ld, ad, labels, map, &printLine);
+				convertToStringSize3(ld, *labels);
+				writeMap("06", ld, ad, *labels, map, &printLine);
 			}
 			else if(strcmp(word, "ADD|") == 0){
 				string ld;
@@ -163,8 +163,8 @@ void createMemorymap(FILE *source, Head labels, string *map){
 					//ERROR
 					addERROR("Not a valid reference to ADD|, missing \"", ld);
 				}
-				convertToStringSize3(ld, labels);
-				writeMap("07", ld, ad, labels, map, &printLine);
+				convertToStringSize3(ld, *labels);
+				writeMap("07", ld, ad, *labels, map, &printLine);
 			}
 			else if(strcmp(word, "SUB|") == 0){
 				string ld;
@@ -173,8 +173,8 @@ void createMemorymap(FILE *source, Head labels, string *map){
 					//ERROR
 					addERROR("Not a valid reference to SUB|, missing \"", ld);
 				}
-				convertToStringSize3(ld, labels);
-				writeMap("08", ld, ad, labels, map, &printLine);
+				convertToStringSize3(ld, *labels);
+				writeMap("08", ld, ad, *labels, map, &printLine);
 			}
 			else if(strcmp(word, "DIV") == 0){
 				string ld;
@@ -183,8 +183,8 @@ void createMemorymap(FILE *source, Head labels, string *map){
 					//ERROR
 					addERROR("Not a valid reference to DIV, missing \"", ld);
 				}
-				convertToStringSize3(ld, labels);
-				writeMap("0C", ld, ad, labels, map, &printLine);
+				convertToStringSize3(ld, *labels);
+				writeMap("0C", ld, ad, *labels, map, &printLine);
 			}
 			else if(strcmp(word, "MUL") == 0){
 				string ld;
@@ -193,8 +193,8 @@ void createMemorymap(FILE *source, Head labels, string *map){
 					//ERROR
 					addERROR("Not a valid reference to MUL, missing \"", ld);
 				}
-				convertToStringSize3(ld, labels);
-				writeMap("0B", ld, ad, labels, map, &printLine);
+				convertToStringSize3(ld, *labels);
+				writeMap("0B", ld, ad, *labels, map, &printLine);
 			}
 
 			//JUMPs
@@ -210,7 +210,7 @@ void createMemorymap(FILE *source, Head labels, string *map){
 
 				//Checking if the reference is an address 
 				//(Need to verify left or right)
-				Node a = findStringList(labels, jmp);
+				Node a = findStringList(*labels, jmp);
 				int left;
 				if(a != NULL){
 					left = a->left;
@@ -218,13 +218,13 @@ void createMemorymap(FILE *source, Head labels, string *map){
 			
 				//Jump right
 				if(a != NULL && left == false){
-					convertToStringSize3(jmp, labels);
-					writeMap("0E", jmp, ad, labels, map, &printLine);
+					convertToStringSize3(jmp, *labels);
+					writeMap("0E", jmp, ad, *labels, map, &printLine);
 				}
 				//Jump left - always
 				else if(checkIfNumber(jmp) || checkIfHex(jmp) || (a!=NULL && left==true)){
-					convertToStringSize3(jmp, labels);
-					writeMap("0D", jmp, ad, labels, map, &printLine);
+					convertToStringSize3(jmp, *labels);
+					writeMap("0D", jmp, ad, *labels, map, &printLine);
 				}
 			}
 			else if(strcmp(word, "JUMP+") == 0){
@@ -239,7 +239,7 @@ void createMemorymap(FILE *source, Head labels, string *map){
 
 				//Checking if the reference is an address 
 				//(Need to verify left or right)
-				Node a = findStringList(labels, jmp);
+				Node a = findStringList(*labels, jmp);
 				int left;
 				if(a != NULL){
 					left = a->left;
@@ -247,19 +247,23 @@ void createMemorymap(FILE *source, Head labels, string *map){
 			
 				//Jump left - always
 				if(checkIfNumber(jmp) == true || (a != NULL && left == true)){
-					convertToStringSize3(jmp, labels);
-					writeMap("0F", jmp, ad, labels, map, &printLine);
+					convertToStringSize3(jmp, *labels);
+					writeMap("0F", jmp, ad, *labels, map, &printLine);
 				}
 				else if(a != NULL && left == false){
-					convertToStringSize3(jmp, labels);
-					writeMap("10", jmp, ad, labels, map, &printLine);
+					convertToStringSize3(jmp, *labels);
+					writeMap("10", jmp, ad, *labels, map, &printLine);
 				}
 			}	
 		}
 
 		else if(checkDirective(word)){
+
+			if(strcmp(word, ".set") == 0){
+				addSet(source, labels);
+			}
 			
-			if(strcmp(word, ".word") == 0){
+			else if(strcmp(word, ".word") == 0){
 				
 				if(ad.left == false){
 					//ERROR
@@ -270,8 +274,8 @@ void createMemorymap(FILE *source, Head labels, string *map){
 					string w;
 					fscanf(source, " %s", w);
 					removeDots(w);
-					convertToStringSize10(w, labels);
-					writeWordOnMap(w, ad, map, &printLine, labels);
+					convertToStringSize10(w, *labels);
+					writeWordOnMap(w, ad, map, &printLine, *labels);
 					ad.ad = ad.ad +1;
 				}
 			}
@@ -288,9 +292,9 @@ void createMemorymap(FILE *source, Head labels, string *map){
 					fscanf(source, "%d", &v);
 					fscanf(source, " %s", w);
 					removeDots(w);
-					convertToStringSize10(w, labels);
+					convertToStringSize10(w, *labels);
 					for(int i=0; i<v; i++){
-						writeWordOnMap(w, ad, map, &printLine, labels);
+						writeWordOnMap(w, ad, map, &printLine, *labels);
 						ad.ad = ad.ad +1;
 					}
 				}
@@ -298,7 +302,7 @@ void createMemorymap(FILE *source, Head labels, string *map){
 		}
 
 		else if(checkIfNumber(word)==false && checkIfHex(word)==false && 
-			findStringList(labels,word)==NULL){
+			findStringList(*labels,word)==NULL){
 			//ERROR
 			string e = "Invalid Command ";
 			strcat(e, word);
@@ -310,13 +314,13 @@ void createMemorymap(FILE *source, Head labels, string *map){
 		updateAddress(word, &ad, source);
 		if(before != ad.ad && ad.left == false){
 			//A position changed
-			writeMap("00", "000", ad, labels, map, &printLine);
+			writeMap("00", "000", ad, *labels, map, &printLine);
 			ad.left = true;
 		}
 	}
 
 	if(ad.left == false){
-		writeMap("00", "000", ad, labels, map, &printLine);
+		writeMap("00", "000", ad, *labels, map, &printLine);
 	}
 
 	//Add 1 to the line counter

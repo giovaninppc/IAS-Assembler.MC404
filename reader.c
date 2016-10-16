@@ -46,18 +46,25 @@ void startAddress(address *a){
 
 /*This function recieves a word and an address
   And alter the value of the address*/
-void changeAddress(string s, address *ad, FILE *source){
+void changeAddress(string s, address *ad, string *arg, int *i, int limit){
 
 	//Checking for directives wich may change the position
 	if(s[0] == '.'){
 		if(strcmp(s, ".word") == 0){
 			(*ad).ad = ad->ad + 1;
+			*i = *i + 1;
 			return;
 		}
 		else if (strcmp(s, ".org") == 0){
 			string orgSize;
-			fscanf(source, " %s", orgSize);
-			//printf("%s %d\n", orgSize, (int)strlen(orgSize));
+			if(*i + 1 > limit){
+				//ERROR
+				addERROR("Missing argument", arg[*i]);
+			}
+			*i = *i + 1;
+			strcpy(orgSize, arg[*i]);
+			//fscanf(source, " %s", orgSize);
+			//getNextWord(orgSize, row, i);
 			(*ad).ad = convertNumber(orgSize);
 			(*ad).left = 1;
 			return;
@@ -65,15 +72,32 @@ void changeAddress(string s, address *ad, FILE *source){
 		else if (strcmp(s, ".wfill") == 0){
 			//wfill, falta considerar o hexadecimal
 			string wfillSize;
-			fscanf(source, " %s", wfillSize);
-			//printf("%s %d\n", wfillSize, (int)strlen(wfillSize));
+			if(*i + 1 > limit){
+				//ERROR
+				addERROR("Missing argument", arg[*i]);
+			}
+			*i = *i + 1;
+			strcpy(wfillSize, arg[*i]);
+			//fscanf(source, " %s", wfillSize);
+			//getNextWord(wfillSize, row, i);
 			(*ad).ad = ad->ad + convertNumber(wfillSize);
-			fscanf(source, " %s", wfillSize); //read the value after the wfillSize
+			//fscanf(source, " %s", wfillSize); //read the value after the wfillSize
+			//getNextWord(wfillSize, row, i);
+			*i = *i + 1;
 			return;
 		}
 		else if (strcmp(s, ".align") == 0){
+			string align;
 			int allign;
-			fscanf(source, "%d", &allign);
+			//fscanf(source, "%d", &allign);
+			//getNextWord(align, row, i);
+			if(*i + 1 > limit){
+				//ERROR
+				addERROR("Missing argument", arg[*i]);
+			}
+			*i = *i + 1;
+			strcpy(align, arg[*i]);
+			allign = convertNumber(align);
 			if(ad->left == false){
 				(*ad).ad = ad->ad + 1;
 				(*ad).left = true;
@@ -205,10 +229,14 @@ void addSet(FILE *source, Head *labels){
 	insertList(labels, set, a);
 }
 
-/*Check if a given string does not contais symbols*/
+/*Check if a given string does not contains symbols and do not start with a number*/
 bool checkSym(string s){
 	int size = strlen(s);
-	for(int i=0; i<size; i++){
+	if(s[0] >= '0' && s[0] <= '9'){
+		//it cannot start with a number
+		return false;
+	}
+	for(int i=1; i<size; i++){
 		if(isalnum(s[i]) == 0){
 			return false;
 		}
@@ -219,74 +247,76 @@ bool checkSym(string s){
 /*Get the labels from the document*/
 void getLabels(FILE *source, Head *labels){
 	
-	string word;
+	//string word; 
+	string row;
+	string arg[5];
 	address place;
-	char kill = '\n', use;
-	int line = 1;
+	//char kill = '\n', use;
+	//int line = 0, i=0;
+	int i=0;
+	//bool endLine = false;
 	bool lineLabel = false;
+	bool com = false;
 
 	startAddress(&place);
 
-	while(fscanf(source, " %s", word) != EOF){
+	while(fgets(row, 65 , source) != NULL){
 
-		//Getting the last caracter, if its a line breaker, add 1 line		
-		fscanf(source, "%c", &kill);
-		use = kill;
-		while(use == ' ' || use == '\t'){
-			fscanf(source, "%c", &use);
-		}
-		if(use == '\n'){
-			kill = use;
-		}
-		fseek(source, -1*sizeof(char), SEEK_CUR);
+		int args = sscanf(row, " %s %s %s %s %s", arg[0], arg[1], arg[2], arg[3], arg[4]);
 
-		/*Passing Comment*/
-		if(word[0] == '#'){
-			finishLine(source);
-			lineLabel = false;
-			continue;
-		}
+		i =0 ;
+		lineLabel = false;
+		com = false;
+		while(i < args){
+			if(arg[i][0] == '#'){
+					i = args;
+					break;
+				}
 
-		//Change the addres depending on the command
-		changeAddress(word, &place, source);
+			//Change the addres depending on the command
+			changeAddress(arg[i], &place, arg, &i, args);
 
-		//Verify if the word given is actually a label
-		if(checkLabel(word)){
+			//Verify if the word given is actually a label
+			if(checkLabel(arg[i])){
 
-			//Checking if its the only label on this line
-			if(lineLabel == true){
-				//ERROR
-				addERROR("More than 1 label on the line", word);
-				return;
+				//Checking if its the only label on this line
+				if(lineLabel == true){
+					//ERROR
+					addERROR("More than 1 label on the line", arg[i]);
+					return;
+				}
+
+				//Checking if the Lable is the furs thing on the line
+				if(com == true){
+					//ERROR
+					addERROR("The label has to be the first thing on line", arg[i]);
+					return;
+				}
+
+				lineLabel = true;
+				removeDots(arg[i]);
+				insertList(labels, arg[i], place);
 			}
-
-			lineLabel = true;
-			removeDots(word);
-			insertList(labels, word, place);
-		}
-
-		if(strcmp(word, ".set") == 0){
-			addSet(source, labels);
-		}
-
-		if(strcmp(word, ".word") == 0){
-			string x;
-			fscanf(source, " %s", x);
-			/*Node a = findStringList(*labels, x);
-			if(checkIfNumber(x)==false && checkIfHex(x)==false 
-				&& (a==NULL || a->left == -1) ){
-				//ERROR
-				addERROR("Invalid parameter on .word directive" , x);
-			}*/
-			lineLabel = false;
-			fscanf(source, "%c", &kill);
-		}
-
-		if(kill == '\n'){
-			line++;
-			lineLabel = false;
+			com = true;
+			i++;
 		}
 	}
+}
+
+
+/*Geting next word*/
+void getNextWord(string word, string row, int *i){
+
+	printf("%s\n", row);
+
+	int j=0;
+	while(row[*i] != ' ' && row[*i] != '\n' && row[*i] != '\t'){
+		word[j] = row[*i];
+		*i = *i + 1;
+		j++;
+	}
+	*i = *i + 1;
+	word[j] = '\0';
 }
 
 /*Remove te caracter : at the end of a string*/

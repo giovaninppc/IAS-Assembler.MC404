@@ -16,7 +16,10 @@ void oneStep(address *ad);
 int convertNumber(string s);
 void startAddress(address *a);
 bool checkRegularCommand(string s);
+void addSet(FILE *source, Head *labels);
 void removeDots(string s);
 bool checkSym(string s);
+void getNextWord(string word, string row, int *i);
+//void checkMisplacedLabels(FILE *source, Head labels);
 
 #endif

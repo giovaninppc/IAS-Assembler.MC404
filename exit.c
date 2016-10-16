@@ -82,10 +82,11 @@ void ordenateMap(string *map){
  and the line correspondent to the error*/
 void addERROR(string message, string error){
 	
-	strcpy(ERRORmessage, message);
-	strcpy(lineERROR, error);
-	ERROR = true;
-
+	if(ERROR == false){
+		strcpy(ERRORmessage, message);
+		strcpy(lineERROR, error);
+		ERROR = true;
+	}
 }
 
 /*Returns the value of ERROR*/

@@ -60,9 +60,11 @@ int main(int argc, char *argv[]){
 	getLabels(source, &labels);
 	rewind(source);
 
+//printList(labels);
+
 	/*reating Memory Map*/
 	if(getERRORvalue() == false){
-		createMemorymap(source, labels, map);
+		createMemorymap(source, &labels, map);
 	}
 
 	/*Printing Answer*/

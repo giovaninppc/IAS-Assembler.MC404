@@ -8,7 +8,7 @@
 
 #include "reader.h"
 
-void createMemorymap(FILE *source, Head labels, string *map);
+void createMemorymap(FILE *source, Head *labels, string *map);
 int updateAddress(string s, address *ad, FILE *source);
 void writeMap(string op, string add, address ad, Head labels, string *map, int *printLine);
 void writeWordOnMap(string word, address ad, string *map, int *printLine, Head labels);
