@@ -26,6 +26,7 @@ void createMemorymap(FILE *source, Head labels, string *map){
 		fscanf(source, "%c", &kill);
 
 		removeDots(word);
+
 		/*Passing Comment*/
 		if(word[0] == '#'){
 			finishLine(source);
@@ -273,7 +274,7 @@ void createMemorymap(FILE *source, Head labels, string *map){
 					ad.ad = ad.ad +1;
 				}
 			}
-			if(strcmp(word, ".wfill") == 0){
+			else if(strcmp(word, ".wfill") == 0){
 				if(ad.left == false){
 					//ERROR
 					addERROR("Trying to add a word vector on the right side of memory map", 
@@ -304,7 +305,13 @@ void createMemorymap(FILE *source, Head labels, string *map){
 			return;
 		}
 
+		int before = ad.ad;
 		updateAddress(word, &ad, source);
+		if(before != ad.ad && ad.left == false){
+			//A position changed
+			writeMap("00", "000", ad, labels, map, &printLine);
+			ad.left = true;
+		}
 	}
 
 	if(ad.left == false){
@@ -560,6 +567,10 @@ void writeMap(string op, string add, address ad, Head labels, string *map, int *
 		}
 		string k;
 		sprintf (k, "\"%d\"", ad.ad);
+		if(ad.ad > 1023){
+			addERROR("Exceded Memorymap Limit", add);
+			return;
+		}
 		convertToStringSize3(k, labels);
 		strcat(map[*printLine], k);
 		strcat(map[*printLine], " ");
@@ -591,6 +602,10 @@ void writeWordOnMap(string word, address ad, string *map, int *printLine, Head l
 
 	int size = strlen(map[*printLine]);
 	for(int i=0, j=0; i<= 10; i++, j++){
+		if(j > 1023){
+			addERROR("Exceded Memorymap Limit", word);
+			return;
+		}
 		map[*printLine][size + j] = word[i];
 		if(j == 1 || j == 5 || j == 8){
 			map[*printLine][size + j + 1] = 0;
@@ -658,7 +673,7 @@ bool removeAspas(string s){
 }
 
 /*Update the address given by parameter (ad) depending on the command s*/
-void updateAddress(string s, address *ad, FILE *source){
+int updateAddress(string s, address *ad, FILE *source){
 
 	//Checking for directives wich may change the position
 	if(s[0] == '.'){
@@ -666,24 +681,28 @@ void updateAddress(string s, address *ad, FILE *source){
 			string orgSize;
 			fscanf(source, " %s", orgSize);
 			(*ad).ad = convertNumber(orgSize);
-			(*ad).left = 1;
-			return;
+			//(*ad).left = true;
+			return 0;
 		}
-		else if (strcmp(s, ".allign") == 0){
+		else if (strcmp(s, ".align") == 0){
 			int allign;
 			fscanf(source, "%d", &allign);
 			if(ad->left == false){
 				(*ad).ad = ad->ad + 1;
-				(*ad).left = true;
 			}
-			if(ad->ad % allign != 0){
+			//(*ad).left = true;
+			if(ad->ad == 0){
+				(*ad).ad = allign;
+			}
+			else if(ad->ad % allign != 0){
 				(*ad).ad = ad->ad + allign - (ad->ad % allign);
 			}
-			return;
+
+			return 1;
 		}
 		else if(strcmp(s, ".set")){
 			//It doesnt jump addresses, but its not an error
-			return;
+			return 0;
 		}
 		else {
 			//DIRETIVA INVALIDA
@@ -695,5 +714,5 @@ void updateAddress(string s, address *ad, FILE *source){
 	else if(checkRegularCommand(s)){
 		oneStep(ad);
 	}
-
+	return 0;
 }

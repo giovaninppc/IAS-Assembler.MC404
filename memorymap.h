@@ -9,7 +9,7 @@
 #include "reader.h"
 
 void createMemorymap(FILE *source, Head labels, string *map);
-void updateAddress(string s, address *ad, FILE *source);
+int updateAddress(string s, address *ad, FILE *source);
 void writeMap(string op, string add, address ad, Head labels, string *map, int *printLine);
 void writeWordOnMap(string word, address ad, string *map, int *printLine, Head labels);
 bool checkDirective(string s);

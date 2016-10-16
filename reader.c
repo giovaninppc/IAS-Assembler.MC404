@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include "exit.h"
 
+/*Finishes reading a line from the given FILE*/
 void finishLine (FILE *source){
 
 	char kill;
@@ -214,10 +215,12 @@ void getLabels(FILE *source, Head *labels){
 
 		//Getting the last caracter, if its a line breaker, add 1 line		
 		fscanf(source, "%c", &kill);
+		//printf("%s  ---%c\n", word, kill);
 		
 		/*Passing Comment*/
 		if(word[0] == '#'){
 			finishLine(source);
+			lineLabel = false;
 			continue;
 		}
 
@@ -241,6 +244,18 @@ void getLabels(FILE *source, Head *labels){
 
 		if(strcmp(word, ".set") == 0){
 			addSet(source, labels);
+		}
+
+		if(strcmp(word, ".word") == 0){
+			string x;
+			fscanf(source, " %s", x);
+			if(checkIfNumber(x)==false && checkIfHex(x)==false 
+				&& findStringList(*labels, x)==NULL){
+				//ERROR
+				addERROR("Invalid parameter on .word directive" , x);
+			}
+			lineLabel = false;
+			fscanf(source, "%c", &kill);
 		}
 
 		if(kill == '\n'){
