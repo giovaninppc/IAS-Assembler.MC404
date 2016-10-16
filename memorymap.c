@@ -11,7 +11,8 @@
 #include <string.h>
 #include <stdlib.h>
 
-
+/*Generates a Memory bap based on a source code and all the sets and labels stored
+on the labels list - passed by parameters*/
 void createMemorymap(FILE *source, Head labels, string *map){
 
 	string word;

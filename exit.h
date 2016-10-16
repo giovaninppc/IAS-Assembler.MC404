@@ -10,5 +10,7 @@ void out(string *map, int writeMode, FILE *output, FILE *source);
 void addERROR(string message, string error);
 bool getERRORvalue();
 int getLineERROR(FILE *source, string s);
+bool checkPrintOrder(string *map);
+void ordenateMap(string *map);
 
 #endif

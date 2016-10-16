@@ -71,7 +71,7 @@ void changeAddress(string s, address *ad, FILE *source){
 			fscanf(source, " %s", wfillSize); //read the value after the wfillSize
 			return;
 		}
-		else if (strcmp(s, ".allign") == 0){
+		else if (strcmp(s, ".align") == 0){
 			int allign;
 			fscanf(source, "%d", &allign);
 			if(ad->left == false){
@@ -249,11 +249,11 @@ void getLabels(FILE *source, Head *labels){
 		if(strcmp(word, ".word") == 0){
 			string x;
 			fscanf(source, " %s", x);
-			if(checkIfNumber(x)==false && checkIfHex(x)==false 
+			/*if(checkIfNumber(x)==false && checkIfHex(x)==false 
 				&& findStringList(*labels, x)==NULL){
 				//ERROR
 				addERROR("Invalid parameter on .word directive" , x);
-			}
+			}*/
 			lineLabel = false;
 			fscanf(source, "%c", &kill);
 		}

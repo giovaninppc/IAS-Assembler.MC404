@@ -34,6 +34,9 @@ void out(string *map, int writeMode, FILE *output, FILE *source){
 	}
 
 	//Printing on stdout
+	if(checkPrintOrder(map) == false){
+		ordenateMap(map);
+	}
 	if(writeMode == false){
 		for(int i=0; strlen(map[i]) > 0; i++){
 			printf("%s\n", map[i]);
@@ -44,6 +47,32 @@ void out(string *map, int writeMode, FILE *output, FILE *source){
 	else if(writeMode == true){
 		for(int i=0; strlen(map[i]) > 0; i++){
 			fprintf(output, "%s\n", map[i]);
+		}
+	}
+}
+
+/*Check if the Memory map is on printing order*/
+bool checkPrintOrder(string *map){
+	for(int i=1; strlen(map[i]) > 0; i++){
+		if(strcmp(map[i], map[i-1]) < 0){
+			return false;
+		}
+	}
+	return true;
+}
+
+/*Ordenate a memory map to the print order*/
+void ordenateMap(string *map){
+	string temp;
+
+	for(int i=0; (int)strlen(map[i+1]) > 0; i++){
+		for(int j =0; (int)strlen(map[j+1]) > 0; j++){
+			if(strcmp(map[j],map[j+1]) > 0)
+		         {
+		            strcpy(temp,map[j]);
+		            strcpy(map[j],map[j+1]);
+		            strcpy(map[j+1],temp);                               
+		    }
 		}
 	}
 }
