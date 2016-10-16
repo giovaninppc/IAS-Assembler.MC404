@@ -17,5 +17,6 @@ int convertNumber(string s);
 void startAddress(address *a);
 bool checkRegularCommand(string s);
 void removeDots(string s);
+bool checkSym(string s);
 
 #endif

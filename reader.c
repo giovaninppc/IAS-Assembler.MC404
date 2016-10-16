@@ -184,14 +184,19 @@ void oneStep(address *ad){
 	}
 }
 
-/**/
+/*Add a .set on the given list os parameters*/
 void addSet(FILE *source, Head *labels){
 
 	string set, number;
 	fscanf(source, " %s", set);
 	fscanf(source, " %s", number);
+	if(checkSym(set) == false){
+		//ERROR
+		addERROR("Not a valid .set Sym", set);
+		return;
+	}
 	if(checkIfNumber(number) == false && checkIfHex(number) == false){
-		//ERROR -- Arrumar para hexadecimais
+		//ERROR
 		addERROR("Wrong parameters on .set directive", number);
 	}
 	Address a;
@@ -200,12 +205,23 @@ void addSet(FILE *source, Head *labels){
 	insertList(labels, set, a);
 }
 
+/*Check if a given string does not contais symbols*/
+bool checkSym(string s){
+	int size = strlen(s);
+	for(int i=0; i<size; i++){
+		if(isalnum(s[i]) == 0){
+			return false;
+		}
+	}
+	return true;
+}
+
 /*Get the labels from the document*/
 void getLabels(FILE *source, Head *labels){
 	
 	string word;
 	address place;
-	char kill = '\n';
+	char kill = '\n', use;
 	int line = 1;
 	bool lineLabel = false;
 
@@ -215,8 +231,15 @@ void getLabels(FILE *source, Head *labels){
 
 		//Getting the last caracter, if its a line breaker, add 1 line		
 		fscanf(source, "%c", &kill);
-		//printf("%s  ---%c\n", word, kill);
-		
+		use = kill;
+		while(use == ' ' || use == '\t'){
+			fscanf(source, "%c", &use);
+		}
+		if(use == '\n'){
+			kill = use;
+		}
+		fseek(source, -1*sizeof(char), SEEK_CUR);
+
 		/*Passing Comment*/
 		if(word[0] == '#'){
 			finishLine(source);
@@ -249,8 +272,9 @@ void getLabels(FILE *source, Head *labels){
 		if(strcmp(word, ".word") == 0){
 			string x;
 			fscanf(source, " %s", x);
-			/*if(checkIfNumber(x)==false && checkIfHex(x)==false 
-				&& findStringList(*labels, x)==NULL){
+			/*Node a = findStringList(*labels, x);
+			if(checkIfNumber(x)==false && checkIfHex(x)==false 
+				&& (a==NULL || a->left == -1) ){
 				//ERROR
 				addERROR("Invalid parameter on .word directive" , x);
 			}*/
