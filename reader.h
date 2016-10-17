@@ -1,5 +1,7 @@
 /*Giovani Nascimento Pereira - 168609
- *Modulo .h do Reader*/
+ *Modulo .h do Reader
+ *Essa biblioteca auxilia na obtencao dos rotulos
+ *provindos do arquivo de entrada e armazenamento na lista encabecada por Head*/
 
 #ifndef _reader
 #define _reader
@@ -20,6 +22,5 @@ void addSet(FILE *source, Head *labels);
 void removeDots(string s);
 bool checkSym(string s);
 void getNextWord(string word, string row, int *i);
-//void checkMisplacedLabels(FILE *source, Head labels);
 
 #endif

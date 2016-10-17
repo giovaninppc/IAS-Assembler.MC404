@@ -30,9 +30,8 @@ void insertList(Head *head, string s, address value){
 	while(node->next != NULL){
 		node = node->next;
 	}
-
+	
 	node->next = newNode(s, value);
-
 }
 
 /*Start a List with a Null pointer*/
@@ -71,7 +70,6 @@ void deleteList(Head head){
 		node1 = node1->next;
 		free(node2);
 	}
-
 }
 
 /*Print a List on stdout*/

@@ -1,5 +1,5 @@
 /*Giovani Nasciment Pereira - 168609
- * Modulo .h para o Headres da Lista*/
+ * Modulo .h para o Header da Lista*/
 
 #ifndef _Library
 #define _Library
