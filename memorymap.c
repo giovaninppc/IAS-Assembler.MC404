@@ -294,6 +294,10 @@ void createMemorymap(FILE *source, Head *labels, string *map){
 					removeDots(w);
 					convertToStringSize10(w, *labels);
 					for(int i=0; i<v; i++){
+						if(ad.ad > 1023){
+							addERROR("Memorymap limit excedded!", word);
+							return;
+						}
 						writeWordOnMap(w, ad, map, &printLine, *labels);
 						ad.ad = ad.ad +1;
 					}
@@ -686,6 +690,10 @@ int updateAddress(string s, address *ad, FILE *source){
 			string orgSize;
 			fscanf(source, " %s", orgSize);
 			(*ad).ad = convertNumber(orgSize);
+			if((*ad).ad > 1023){
+				addERROR("Memorymap limit excedded!", s);
+				return -1;
+			}
 			//(*ad).left = true;
 			return 0;
 		}
