@@ -61,12 +61,7 @@ Node findStringList (Head head, string s){
 	return NULL;
 }
 
-void removeList(){
-
-
-}
-
-/*Free the memoty allocated by the List*/
+/*Free the memory allocated by the List*/
 void deleteList(Head head){
 
 	Node node1 = head, node2;

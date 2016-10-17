@@ -1,4 +1,35 @@
 alpha:
 
 
-ADD "10" beta:
+
+
+
+
+
+
+
+
+cryio:
+
+
+
+dumb:
+
+
+ADD "2"
+ADD "3"
+SUB "5"
+# .wfill 10 10
+
+glore:
+
+
+
+ADD "10" 
+.set GLUB 10
+SUB "-20"
+SUB "999"
+DIV "2"
+MUL "7"
+
+.wfill 1024 1024

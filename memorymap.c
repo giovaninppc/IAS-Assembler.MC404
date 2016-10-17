@@ -25,13 +25,13 @@ void createMemorymap(FILE *source, Head *labels, string *map){
 	while(fscanf(source, " %s", word) != EOF){
 		
 		fscanf(source, "%c", &kill);
-
 		removeDots(word);
 
 		/*Passing Comment*/
 		if(word[0] == '#'){
 			finishLine(source);
 			line++;
+			word[0] = '0';
 			continue;
 		}
 
@@ -267,7 +267,9 @@ void createMemorymap(FILE *source, Head *labels, string *map){
 				
 				if(ad.left == false){
 					//ERROR
-					addERROR("Trying to add a word on the right side of memory map", word);
+					string x;
+					fgets(x, 65, source);
+					addERROR("Trying to add a word on the right side of memory map", x);
 					return;
 				}
 				else{
@@ -282,8 +284,10 @@ void createMemorymap(FILE *source, Head *labels, string *map){
 			else if(strcmp(word, ".wfill") == 0){
 				if(ad.left == false){
 					//ERROR
+					string x;
+					fgets(x, 65, source);
 					addERROR("Trying to add a word vector on the right side of memory map", 
-						word);
+						x);
 					return;
 				}
 				else{
@@ -295,7 +299,10 @@ void createMemorymap(FILE *source, Head *labels, string *map){
 					convertToStringSize10(w, *labels);
 					for(int i=0; i<v; i++){
 						if(ad.ad > 1023){
-							addERROR("Memorymap limit excedded!", word);
+							string x;
+							fseek(source, -7*sizeof(char), SEEK_CUR);
+							fgets(x, 65, source);
+							addERROR("Memorymap limit excedded!", x);
 							return;
 						}
 						writeWordOnMap(w, ad, map, &printLine, *labels);
@@ -315,6 +322,7 @@ void createMemorymap(FILE *source, Head *labels, string *map){
 		}
 
 		int before = ad.ad;
+
 		updateAddress(word, &ad, source);
 		if(before != ad.ad && ad.left == false){
 			//A position changed
@@ -329,7 +337,7 @@ void createMemorymap(FILE *source, Head *labels, string *map){
 
 	//Add 1 to the line counter
 	if(kill == '\n'){
-			line++;
+		line++;
 	}
 
 }

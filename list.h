@@ -29,6 +29,5 @@ void deleteList(Head head);
 void printList(Head head);
 Node newNode(string s, address value);
 Node startList();
-void removeList();
 
 #endif
