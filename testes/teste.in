@@ -4,7 +4,9 @@ alpha:
 
 
 
-
+gama:
+delta:
+epsolon:
 
 
 
@@ -31,5 +33,3 @@ SUB "-20"
 SUB "999"
 DIV "2"
 MUL "7"
-
-.wfill 1024 1024
